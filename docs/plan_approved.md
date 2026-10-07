@@ -1,5 +1,7 @@
 # PLAN_APPROVED — Phương án triển khai cuối đã duyệt
 
+**Tên đề tài:** Nghiên cứu và phân tích các yếu tố ảnh hưởng đến kết quả học tập của sinh viên đại học
+
 **Cập nhật:** 07/10/2026
 
 **Người thực hiện chính:** Leader dự án
@@ -11,94 +13,74 @@
 
 ## 1. Mục tiêu nghiên cứu
 
-Phân tích các yếu tố học tập, hành vi VLE và bối cảnh người học có liên hệ với kết quả học tập; sau đó dùng Logistic Regression tại ngày 105 để cảnh báo sớm một learning attempt có khả năng kết thúc bằng `Fail` hoặc `Withdrawn`.
+Phân tích những yếu tố học tập liên quan đến khả năng qua môn, trượt hoặc bỏ học. Sau đó dùng Logistic Regression với dữ liệu có đến ngày 105 để cảnh báo sớm một lượt học có khả năng kết thúc bằng trượt hoặc bỏ học. Mô hình không dự đoán điểm số chính xác.
 
 Đây là dữ liệu quan sát. Kết luận dùng từ **liên hệ**, **khác biệt**, **xu hướng**; không tuyên bố quan hệ nhân quả.
 
 ## 2. Câu hỏi phân tích
 
-1. Kết quả và At-Risk phân bố thế nào theo module, presentation và region?
-2. Nhịp tương tác VLE của At-Risk khác Not-At-Risk ra sao theo thời gian?
-3. Độ trễ nộp bài liên hệ thế nào với điểm assessment và lịch sử học lại?
-4. Người học sử dụng những loại tài nguyên VLE nào nhiều nhất?
-5. Tổ hợp `highest_education × imd_band` nào có tỷ lệ At-Risk cao?
-6. Logistic Regression nhận diện At-Risk tốt đến đâu và ai cần được ưu tiên hỗ trợ?
+1. Tỷ lệ qua môn, trượt và bỏ học khác nhau thế nào giữa các học phần và khu vực?
+2. Mức tham gia học trực tuyến liên quan thế nào đến kết quả cuối cùng?
+3. Mức hoàn thành bài đến hạn và thời điểm nộp bài liên quan thế nào đến kết quả và điểm số?
+4. Khi mức tham gia học trực tuyến và điểm bài tập cùng thấp, nguy cơ không đạt thay đổi ra sao?
+5. Sinh viên từng học lại học phần có nguy cơ khác nhóm học lần đầu ra sao?
+6. Mô hình dự đoán trượt/bỏ học chính xác đến đâu và ai cần được ưu tiên hỗ trợ?
 
 ## 3. Quy ước dữ liệu
 
-- Hạt chính: `(code_module, code_presentation, id_student)` — một learning attempt.
+- Hạt chính: `(code_module, code_presentation, id_student)` — một lượt sinh viên học một học phần trong một đợt mở lớp.
 - `At_Risk = 1`: `Fail` hoặc `Withdrawn`; `At_Risk = 0`: `Pass` hoặc `Distinction`.
 - Pass Rate: `Pass` hoặc `Distinction` chia tổng learning attempts.
 - Điểm trung bình: tổng điểm hợp lệ chia số assessment có điểm, không lấy trung bình chồng trung bình.
-- VLE click là proxy tương tác nền tảng, không phải attendance hay study hours.
-- Model dùng snapshot chỉ chứa thông tin có ngày `<= 105`; dashboard không train lại model.
+- VLE là hệ thống học trực tuyến; số lượt tương tác chỉ phản ánh mức độ sử dụng hệ thống, không phải giờ học hay điểm danh.
+- Mô hình chỉ dùng thông tin có ngày `<= 105`; dashboard không huấn luyện lại mô hình.
 - Risk Level phục vụ can thiệp: Low `<40%`, Medium `40–<70%`, High `≥70%`.
 - Threshold phân loại chính thức của model vẫn là `0,415`; risk level không viết lại nhãn dự báo.
 
-## 4. Storytelling cuối — hai trang vật lý
+## 4. Story đã chốt — bốn trang vật lý
 
-Rubric gốc mô tả bốn phần nội dung. Bản triển khai mới **không bỏ nội dung**, mà gom chúng vào hai trang rõ hơn:
+Dashboard bám cấu trúc bốn trang của rubric và tách insight dữ liệu khỏi model:
 
-1. **Academic Insight & Behavior:** mô tả kết quả + yếu tố/hành vi + không gian.
-2. **Risk Matrix & Early Warning:** tương tác đa biến + mô hình + danh sách hành động.
+1. **Bức tranh kết quả học tập:** quy mô trượt/bỏ học, cơ cấu kết quả, học phần và vùng.
+2. **Các yếu tố học tập:** mức tham gia học trực tuyến, hoàn thành bài, thời điểm nộp và tài nguyên được sử dụng.
+3. **Kết hợp nhiều yếu tố:** mức tham gia × điểm bài tập; hoàn cảnh đầu vào; lịch sử học lại.
+4. **Dự đoán nguy cơ:** khả năng trượt/bỏ học, dự đoán đúng/sai, trường hợp bỏ sót và danh sách ưu tiên hỗ trợ.
 
-Mạch kể chuyện: **Ai và ở đâu đang gặp rủi ro → hành vi nào đi cùng kết quả → tổ hợp bối cảnh nào đáng chú ý → model cảnh báo ai để hỗ trợ sớm.**
+Mạch Story: **Kết quả hiện tại ra sao → yếu tố học tập nào liên quan rõ → điều gì xảy ra khi nhiều yếu tố bất lợi cùng xuất hiện → mô hình cảnh báo ai để hỗ trợ.**
 
-## 5. Trang 1 — Academic Insight & Behavior
+## 5. Kết luận trọng tâm phải thể hiện rõ
 
-### Bộ lọc và KPI
+1. **Hoàn thành bài đến hạn là yếu tố liên quan rõ nhất:** nhóm chưa hoàn thành bài có nguy cơ không đạt 96,6%, trong khi nhóm hoàn thành đủ là 24,8%.
+2. **Mức tham gia học trực tuyến có liên hệ mạnh:** nhóm 25% ít tương tác nhất có nguy cơ không đạt 64,4%, còn nhóm 25% tương tác nhiều nhất là 18,7%.
+3. **Hai yếu tố bất lợi cùng xuất hiện làm nguy cơ nổi bật hơn:** nhóm vừa ít tương tác vừa có điểm bài tập thấp có nguy cơ 73,3%; nhóm cao ở cả hai chỉ 8,3%.
+4. **Lịch sử học lại là bối cảnh cần chú ý:** nhóm từng học học phần trước có nguy cơ 56,1%, nhóm học lần đầu là 36,3%.
+5. Học phần, khu vực, học vấn đầu vào và hoàn cảnh kinh tế–xã hội chỉ là **bối cảnh có chênh lệch**, không được khẳng định là nguyên nhân.
 
-- Slicers: `code_module`, `code_presentation`, `gender`.
-- KPI: Total Students, Avg Score, Pass Rate, At-Risk Rate.
-- Click một vùng trên map tạo cross-filter cho KPI và bốn chart còn lại; có nút bỏ lọc vùng.
+## 6. Bố cục biểu đồ
 
-### Năm biểu đồ
+| Trang | Biểu đồ và chức năng |
+|---|---|
+| 1 · Bức tranh kết quả học tập | Filled Geographic Map; 100% Stacked Bar có drill học phần ẩn danh → đợt mở lớp; 4 KPI; Story về kết quả chung và bối cảnh |
+| 2 · Các yếu tố học tập | Multi-Line về mức tham gia trực tuyến; Completion Bar; Scatter + Trendline; Treemap; Story nêu hai yếu tố liên quan rõ nhất |
+| 3 · Kết hợp nhiều yếu tố | Heatmap mức tham gia × điểm; Heatmap học vấn × hoàn cảnh khu vực; Box Plot lịch sử học lại; Story nêu kết luận kết hợp |
+| 4 · Dự đoán nguy cơ | 3 KPI; Gauge; Donut đúng/sai/bỏ sót; danh sách ưu tiên hỗ trợ; Story nói rõ mô hình dự đoán trượt/bỏ học |
 
-| # | Biểu đồ | Nội dung và tương tác |
-|---:|---|---|
-| 1 | Filled Geographic Map | 13 vùng OULAD, màu theo At-Risk rate, tooltip có rate/count/N, click vùng để cross-filter |
-| 2 | 100% Stacked Bar | Cơ cấu Distinction/Pass/Fail/Withdrawn; click module để drill xuống presentation |
-| 3 | Multi-Line | VLE clicks trung bình/lượt/ngày, trung bình trượt 7 ngày; At-Risk so với Not-At-Risk; vạch chấm là hạn nộp quan trọng |
-| 4 | Scatter + Trendline | `submission_delay` so với `score`; kích thước theo `num_of_prev_attempts`; màu theo At-Risk; trendline tính trên toàn bộ dữ liệu lọc |
-| 5 | Treemap | Tỷ trọng tổng click theo `activity_type` |
+Thuật ngữ OULAD, VLE, IMD, mã AAA–GGG và B/J phải được giải thích ngay trên dashboard. Các chỉ số mô hình phải được diễn giải bằng câu “trong 100 lượt học”. Không dùng nhãn “Câu chuyện”; tên khối kết luận thống nhất là **Story**.
 
-### Ba insight/story động
+## 7. Insight đặt ở đâu
 
-1. Pass Rate và At-Risk Rate trong filter context.
-2. Chênh lệch VLE clicks trung bình giữa At-Risk và Not-At-Risk.
-3. Tương quan Pearson giữa độ trễ–điểm, kèm loại tài nguyên VLE dẫn đầu.
+- Trang 1: tỷ lệ trượt/bỏ học tổng thể; học phần và vùng là bối cảnh so sánh.
+- Trang 2: hoàn thành bài và mức tham gia trực tuyến là hai yếu tố học tập nổi bật.
+- Trang 3: so sánh nhóm thấp ở cả mức tham gia và điểm với nhóm cao ở cả hai; thêm lịch sử học lại.
+- Trang 4: nói rõ mô hình dự đoán trượt/bỏ học, mức đúng, mức phát hiện và số trường hợp bỏ sót.
 
-## 6. Trang 2 — Risk Matrix & Early Warning
+## 8. Đủ yêu cầu trực quan
 
-### Bộ lọc và KPI
+Có ít nhất **8 loại biểu đồ không phải map**: 100% stacked bar, multi-line, bar, scatter, treemap, heatmap, box plot, gauge và donut. Geographic Map là cổng bắt buộc độc lập.
 
-- Slicers: Risk Level và `imd_band`.
-- KPI: Model Accuracy, Recall At-Risk, High Risk Count.
-- KPI theo filter context được ghi rõ `N`; metric công bố toàn test vẫn hiện trong caption để đối chiếu.
+Mỗi biểu đồ có tiêu đề, trục/đơn vị, tooltip, phạm vi và `N` khi cần. Màu thống nhất: xanh cho nhóm không nguy cơ; cam cho cảnh báo; đỏ cho nhóm có nguy cơ cao.
 
-### Bốn biểu đồ và một bảng hành động
-
-| # | Biểu đồ | Nội dung |
-|---:|---|---|
-| 6 | Heatmap Matrix | Hàng `highest_education`, cột `imd_band`, màu At-Risk rate, từng ô có `N` |
-| 7 | Box Plot | Điểm assessment có trọng số đến ngày 105 theo số lần học trước `0,1,2,3+` |
-| 8 | Gauge | Xác suất At-Risk trung bình với dải Low/Medium/High; vạch tím là threshold model 41,5% |
-| 9 | Donut Actual vs Predicted | TP, TN, FP, FN; nhấn mạnh FN là trường hợp At-Risk bị bỏ sót |
-| — | Student Action List | `student_id`, module, presentation, IMD, probability, model status và data bar đỏ; nút một-click lọc toàn Trang 2 về High Risk; tối đa 100 dòng |
-
-### Ba insight/story động
-
-1. Tổ hợp education × IMD có At-Risk rate cao nhất trong các ô `N≥30`.
-2. So sánh điểm trung vị nhóm chưa học trước với nhóm `3+` lần.
-3. Xác suất trung bình, High Risk Count, Accuracy, Recall và số FN trong filter context.
-
-## 7. Đủ yêu cầu trực quan
-
-Có **8 loại biểu đồ không phải map**: 100% stacked bar, multi-line, scatter, treemap, heatmap, box plot, gauge và donut. Geographic Map là loại thứ chín và là cổng bắt buộc độc lập.
-
-Mỗi chart có title, axis/đơn vị, tooltip, chú thích grain/scope và `N` khi cần. Màu semantic thống nhất: xanh cho an toàn/Not-At-Risk; cam cho cảnh báo; đỏ cho At-Risk/High Risk.
-
-## 8. Data mart phục vụ dashboard
+## 9. Data mart phục vụ dashboard
 
 `src/dashboard_features.py` tạo bốn bảng nhỏ từ dữ liệu interim đã clean:
 
@@ -109,10 +91,9 @@ Mỗi chart có title, axis/đơn vị, tooltip, chú thích grain/scope và `N`
 
 App không đọc `studentVle.csv` 8,4 triệu dòng trong request render. Hai bảng VLE phải bảo toàn tổng `39.605.099` clicks.
 
-## 9. Cổng nghiệm thu
+## 10. Cổng nghiệm thu
 
-- Page 1 mặc định render 5 Plotly charts, 4 KPI, không exception.
-- Page 2 mặc định render 4 Plotly charts, 3 KPI, 1 action table, không exception.
+- Trang 1 render 2 chart/4 KPI; Trang 2 render 4 chart; Trang 3 render 3 chart; Trang 4 render 2 chart/3 KPI/1 table; tất cả không exception.
 - Map render 13/13 region, click region tạo cross-filter và có reset.
 - Module bar drill xuống presentation; breadcrumb hiển thị đúng cấp.
 - Risk Level/IMD filter cập nhật chart, KPI và action list.

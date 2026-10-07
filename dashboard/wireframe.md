@@ -1,51 +1,50 @@
-# Wireframe dashboard hai trang
+# Wireframe dashboard bốn trang
 
-## Trang 1 — Academic Insight & Behavior
+## Trang 1 — Bức tranh kết quả học tập
 
 ```text
-┌─────────────────────────────────────────────────────────────────────┐
-│ Module slicer │ Presentation slicer │ Gender slicer                 │
-├───────────────┬─────────────────────┬───────────────┬───────────────┤
-│ Total Students│ Avg Score           │ Pass Rate     │ At-Risk Rate  │
-├─────────────────────────────────────────────────────────────────────┤
-│ 1. FILLED MAP — click region để cross-filter                       │
-├─────────────────────────────────────────────────────────────────────┤
-│ 2. 100% STACKED BAR — Module → click → Presentation                 │
-├─────────────────────────────────────────────────────────────────────┤
-│ 3. MULTI-LINE — VLE At-Risk vs Not-At-Risk + deadline markers       │
-├─────────────────────────────────────────────────────────────────────┤
-│ 4. SCATTER + TRENDLINE — submission delay × score                   │
-├─────────────────────────────────────────────────────────────────────┤
-│ 5. TREEMAP — activity_type × clicks                                 │
-├─────────────────────────────────────────────────────────────────────┤
-│ STORY CARD — 3 insight ngắn, định lượng, cập nhật theo filter        │
-└─────────────────────────────────────────────────────────────────────┘
+FILTER: Học phần ẩn danh │ Đợt mở lớp │ Giới tính
+KPI: Sinh viên │ Điểm TB │ Tỷ lệ qua môn │ Tỷ lệ có nguy cơ không đạt
+STORY: cứ 100 lượt học có bao nhiêu lượt trượt/bỏ học; học phần/vùng là bối cảnh
+1. FILLED MAP — click region để cross-filter
+2. 100% STACKED BAR — học phần → đợt mở; nhãn nguy cơ không đạt cuối thanh
 ```
 
-## Trang 2 — Risk Matrix & Early Warning
+## Trang 2 — Các yếu tố học tập
 
 ```text
-┌─────────────────────────────────────────────────────────────────────┐
-│ Risk Level slicer                 │ IMD band slicer                  │
-├──────────────────────┬──────────────────────┬───────────────────────┤
-│ Model Accuracy       │ Recall At-Risk       │ High Risk Count       │
-├─────────────────────────────────────────────────────────────────────┤
-│ 6. HEATMAP — highest_education × imd_band                           │
-├─────────────────────────────────────────────────────────────────────┤
-│ 7. BOX PLOT — score ngày 105 × previous attempts                    │
-├───────────────────────────────┬─────────────────────────────────────┤
-│ 8. GAUGE — mean probability   │ 9. DONUT — TP/TN/FP/FN             │
-├─────────────────────────────────────────────────────────────────────┤
-│ STUDENT ACTION LIST — High Risk + red bar + nút lọc High một-click  │
-├─────────────────────────────────────────────────────────────────────┤
-│ STORY CARD — 3 insight ngắn + giới hạn sử dụng model                │
-└─────────────────────────────────────────────────────────────────────┘
+FILTER: Học phần ẩn danh │ Đợt mở lớp │ Giới tính
+STORY: hoàn thành bài là yếu tố rõ nhất + mức tham gia trực tuyến
+3. MULTI-LINE — mức tham gia trực tuyến của nhóm nguy cơ và không nguy cơ
+4. BAR — hoàn thành bài đến ngày 105 × nguy cơ không đạt
+5. SCATTER + TRENDLINE — submission delay × score
+6. TREEMAP — activity_type × clicks
+```
+
+## Trang 3 — Kết hợp nhiều yếu tố
+
+```text
+FILTER: Học phần ẩn danh │ Đợt mở lớp │ Giới tính
+7. HEATMAP — nhóm mức tham gia trực tuyến × nhóm điểm bài tập
+8. HEATMAP — highest_education × imd_band
+9. BOX PLOT — score ngày 105 × previous attempts
+STORY: thấp–thấp/cao–cao + lịch sử học lại + giới hạn của yếu tố bối cảnh
+```
+
+## Trang 4 — Dự đoán nguy cơ
+
+```text
+FILTER: Mức nguy cơ │ Nhóm hoàn cảnh khu vực
+KPI: Tỷ lệ dự đoán đúng │ Tỷ lệ phát hiện │ Số lượt cần ưu tiên
+10. GAUGE — nguy cơ không đạt trung bình
+11. DONUT — dự đoán đúng │ cảnh báo nhầm │ bỏ sót
+DANH SÁCH HỖ TRỢ — nguy cơ cao + thanh cảnh báo + nút lọc
+STORY: dự đoán trượt/bỏ học + độ chính xác dễ hiểu + hành động
 ```
 
 ## Quy tắc UX
 
-- Slicer và KPI luôn đứng trước visual.
-- Insight đặt cuối mỗi story page, không che chart và không lặp mô tả trục.
-- Caption giải thích grain, sample, threshold và limitation ngay nơi cần.
-- Không hiển thị hierarchy nhiều cấp đồng thời; drill chỉ mở một cấp.
-- Action list là hỗ trợ ưu tiên, không phải quyết định tự động.
+- VLE, IMD, AAA–GGG, B/J và các chỉ số mô hình được giải thích bằng tiếng Việt trước biểu đồ.
+- Story dùng ngôn ngữ ngắn, có số liệu và giới hạn; không lặp mô tả trục.
+- Không hiển thị hierarchy dày đặc; drill chỉ mở một cấp.
+- Action List hỗ trợ ưu tiên, không phải quyết định tự động.

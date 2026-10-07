@@ -157,7 +157,7 @@ Checklist này thay thế các câu hỏi xác minh cũ: kết quả đã đư�
 
 Hiện vật [Data Quality Report](../reports/data-quality-report.md) ghi dữ liệu thực, script và lệnh chạy. T07 aggregate `studentAssessment` thành 25.843 và `studentVle` thành 29.228 attempt có event rồi left join vào 32.593 lượt học của `studentInfo`; output 0 duplicate attempt key, 0 unmatched assessment/VLE dimension/registration/courses. Bước chuẩn hóa hiển thị đổi `imd_band` về định dạng phần trăm tường minh, thêm `imd_band_display`, fill 0 có chọn lọc cho count/tổng event và bỏ `has_registration_record` zero variance. Đây là bảng mô tả sạch tái tạo, không phải snapshot feature dự báo sớm. Model v4 dựng snapshot cutoff ngày 105 riêng; mọi dashboard phải dùng đúng contract trong `docs/04-model.md`.
 
-## Data marts cho dashboard hai trang
+## Data marts cho dashboard bốn trang
 
 | File | Grain | Cột chính | Guardrail |
 |---|---|---|---|

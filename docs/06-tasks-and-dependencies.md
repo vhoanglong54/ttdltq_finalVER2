@@ -15,23 +15,23 @@ Toàn bộ project do **một người thực hiện chính**. Tài liệu này 
 |---:|---|---|---|---|
 | 1 | Nguồn và data contract | Nguồn/checksum, dictionary 7 bảng, khóa và grain | — | Đã có hiện vật |
 | 2 | Audit, cleaning, processed | Pipeline, Data Quality Report, `clean_dataset.csv` tái tạo được | Bước 1 | Đã có hiện vật |
-| 3 | Câu hỏi và giả thuyết | RQ1–RQ6, H01–H10 phù hợp OULAD | Bước 1 | Đã có hiện vật local |
-| 4 | EDA và interaction analysis | Sáu chart tĩnh, kết quả H01–H10 | Bước 2–3 | Đã có hiện vật local |
-| 5 | Insight và storytelling | Sáu insight đạt mẫu, mạch chuyện hoàn chỉnh | Bước 4 | Đã có hiện vật local |
+| 3 | Câu hỏi và giả thuyết | RQ1–RQ6, H01–H10 phù hợp OULAD | Bước 1 | Đã có hiện vật trong repo VER2 |
+| 4 | EDA và interaction analysis | Sáu chart tĩnh, kết quả H01–H10 | Bước 2–3 | Đã có hiện vật trong repo VER2 |
+| 5 | Insight và storytelling | Sáu insight đạt mẫu, mạch chuyện hoàn chỉnh | Bước 4 | Đã có hiện vật trong repo VER2 |
 | 6 | Logistic Regression | Feature cutoff-safe, metric/CI, prediction CSV, verification | Bước 2 | Đã có hiện vật kỹ thuật |
-| 7 | Dashboard Python | App hai trang, 8 loại chart thường, map riêng, interaction và action list | Bước 2, 5, 6 | Đã triển khai local; chờ leader duyệt |
-| 8 | Geographic Map | Geometry ONS, mapping 13/13, tooltip/filter/QA | Bước 2, 7 | Đã có hiện vật local và audit tự động |
-| 9 | QA tích hợp | KPI baseline, filter/drill/cross-filter, model/version, map coverage | Bước 5–8 | Tự động PASS; chờ ảnh/video interaction |
+| 7 | Dashboard Python | App bốn trang, Story rõ, ≥8 loại chart thường, map riêng và action list | Bước 2, 5, 6 | Bản hai trang đã push tại `1499c40`; bản bốn trang đang local chờ duyệt |
+| 8 | Geographic Map | Geometry ONS, mapping 13/13, tooltip/filter/QA | Bước 2, 7 | Đã push; mapping 13/13 và audit tự động PASS |
+| 9 | QA tích hợp | KPI baseline, filter/drill/cross-filter, model/version, map coverage | Bước 5–8 | 17/17 test PASS; đã có ảnh và browser QA; video demo chưa làm |
 | 10 | Báo cáo và demo | Báo cáo ≥40 trang, IEEE, slide, video, kịch bản | Bước 9 | Chưa hoàn tất |
 
 ## Thứ tự làm tiếp
 
-1. Mở app và QA thủ công drill-down, tooltip, cross-filtering ở từng trang.
-2. Lưu ảnh/video và trạng thái trước–sau vào `dashboard/evidence/`.
-3. Chốt theme, nhãn tiếng Việt/Anh và kiểm tra layout ở màn hình trình chiếu.
-4. Đối chiếu lần cuối KPI, model output và map coverage sau mọi chỉnh sửa UI.
-5. Viết báo cáo ≥40 trang, slide, kịch bản demo và video backup.
-6. Chỉ commit/push sau khi chủ dự án duyệt danh sách thay đổi local.
+1. Chạy lại app trên đúng máy và độ phân giải dùng để trình chiếu.
+2. Quay video backup cho map cross-filter, module drill-down, tooltip và Student Action List; ảnh browser QA đã có trong `dashboard/evidence/`.
+3. Chỉ tinh chỉnh theme/nhãn nếu phát hiện lỗi trên màn hình trình chiếu; bản hiện tại đã được leader duyệt tại mốc `1499c40`.
+4. Đối chiếu lại KPI, model output và map coverage nếu có bất kỳ chỉnh sửa dữ liệu hoặc UI nào.
+5. Viết báo cáo ≥40 trang, slide và kịch bản demo.
+6. Chỉ commit/push thay đổi mới sau khi chủ dự án duyệt danh sách thay đổi local.
 
 ## Điểm chặn bắt buộc
 

@@ -139,11 +139,11 @@ Lệnh tái tạo: `python src/oulad_pipeline.py build data/raw`.
 
 | Điều kiện | Trạng thái | Bằng chứng / giới hạn |
 |---|---|---|
-| Pipeline tái tạo từ 7 CSV | Đạt về chạy cục bộ | Script và các lệnh trên; `clean_dataset.csv` được theo dõi và bản hiệu chỉnh chưa commit trong đợt tái cấu trúc. |
-| Missing/outlier/duplicate có quyết định | Đạt về pipeline cục bộ | Báo cáo T05/T06; `studentVle` được gom theo learner–resource–day và bảo toàn tổng `sum_click`; bảng khác chỉ loại exact duplicate khi có. |
+| Pipeline tái tạo từ 7 CSV | Đạt và đã đưa vào repo VER2 | Script, lệnh tái tạo và `clean_dataset.csv` được theo dõi; bản hiệu chỉnh đã nằm trong mốc triển khai `1499c40`. |
+| Missing/outlier/duplicate có quyết định | Đạt theo pipeline và test | Báo cáo T05/T06; `studentVle` được gom theo learner–resource–day và bảo toàn tổng `sum_click`; bảng khác chỉ loại exact duplicate khi có. |
 | Join không nhân dòng | Đạt theo test T07 | Output cùng số dòng `studentInfo`, duplicate attempt key 0; event được aggregate trước join. |
-| Dùng được cho EDA/dashboard Python và làm nền model | Đạt local có giới hạn | Bảng processed dành cho mô tả; model dùng bảng interim và feature theo cutoff, không dùng aggregate `*_all_time`. |
-| Hiệu chỉnh event VLE | Đã kiểm tra local | Logic bảo toàn click, report và output local đã tái tạo; chưa commit/push. |
+| Dùng được cho EDA/dashboard Python và làm nền model | Đạt, có giới hạn đã công bố | Bảng processed dành cho mô tả; model dùng bảng interim và feature theo cutoff, không dùng aggregate `*_all_time`. |
+| Hiệu chỉnh event VLE | Đã kiểm tra và push | Logic bảo toàn click, report và output đã tái tạo; test bảo toàn click PASS và bản triển khai nằm trong `ttdltq_finalVER2/main`. |
 
 ## Cách sử dụng và giới hạn
 

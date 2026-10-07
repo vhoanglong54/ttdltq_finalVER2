@@ -1,7 +1,8 @@
 # Bằng chứng dashboard
 
 - [Automated QA](automated-qa-2026-10-06.md)
-- [Visual QA](visual-qa-2026-10-07.md)
-- `screenshots/`: ảnh từng chart, map cross-filter, outcome drill và hai page layout.
+- [Visual QA bốn trang](visual-qa-4page-2026-10-07.md)
+- [Visual QA bản hai trang — lưu trữ](visual-qa-2026-10-07.md)
+- `screenshots/`: ảnh `*-v4.png` là bằng chứng hiện tại sau khi đơn giản hóa Story và thuật ngữ; `*-v2.png` thuộc mốc `1499c40`.
 
-Bằng chứng hiện hành có tên `academic-*v2.png` và `risk-*v2.png`; ảnh giao diện cũ đã được xóa khỏi thư mục này.
+Bản bốn trang đã có ảnh page, từng chart, Story, map cross-filter/drill audit và Action List; vẫn chờ leader duyệt trước commit.

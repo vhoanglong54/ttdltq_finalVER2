@@ -13,7 +13,7 @@
 | Dữ liệu | OULAD, 7 bảng CSV liên kết, hơn 5.000 dòng, có `region`, nguồn học thuật rõ |
 | Xử lý/EDA | Python, Pandas/NumPy, Matplotlib/Seaborn |
 | Dự báo | scikit-learn Logistic Regression, xác suất rủi ro và phân lớp |
-| Trực quan tương tác | Python với Streamlit + Plotly; hai trang Academic Insight & Behavior và Risk Matrix & Early Warning, vẫn bao phủ bốn phần logic của rubric |
+| Trực quan tương tác | Python với Streamlit + Plotly; bốn trang Bức tranh kết quả, Các yếu tố học tập, Kết hợp nhiều yếu tố, Dự đoán nguy cơ |
 | Trọng tâm | Tương tác các yếu tố, risk profile, hành vi VLE theo thời gian, độ tin cậy và sai số model |
 | Thực hiện | Một người chịu trách nhiệm toàn bộ data, EDA, insight, model, dashboard, báo cáo và demo |
 | Điều phối | Theo thứ tự kỹ thuật và cổng kiểm tra; không phân công theo thành viên; commit cần chủ dự án duyệt |

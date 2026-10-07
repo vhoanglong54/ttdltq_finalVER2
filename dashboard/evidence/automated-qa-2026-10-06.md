@@ -13,9 +13,10 @@ python -m unittest discover -s tests -v
 - Unit tests: **17/17 PASS**.
 - Dashboard mart click preservation: PASS ở cả daily và activity mart.
 - Assessment delay contract: PASS.
-- AppTest Academic: 5 Plotly charts, 4 metrics, 0 exception.
-- AppTest Risk: 4 Plotly charts, 3 metrics, 1 dataframe, 0 exception.
-- AppTest High only: 4 Plotly charts, 0 exception, High count 810.
+- AppTest Trang 1: 2 Plotly charts, 4 metrics, 0 exception.
+- AppTest Trang 2: 4 Plotly charts, 0 exception.
+- AppTest Trang 3: 3 Plotly charts, 0 exception.
+- AppTest Trang 4: 2 Plotly charts, 3 metrics, 1 dataframe, 0 exception.
 - Markdown relative links: 0 missing.
 - `git diff --check`: PASS.
 - Protected rubric files: không có diff.

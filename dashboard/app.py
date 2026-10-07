@@ -1,9 +1,9 @@
-"""Two-page OULAD learning analytics dashboard.
+"""Four-page OULAD learning analytics dashboard.
 
-Page 1 explores academic outcomes and learning behaviour. Page 2 combines a
-multivariate risk matrix with the verified Logistic Regression early-warning
-output. The app reads reproducible processed artifacts; it never trains the
-model or joins the multi-million-row VLE table while rendering.
+The pages follow one analytical flow: outcomes and geography, learning
+behaviour, multivariate interaction, then prediction and action. The app reads
+reproducible processed artifacts; it never trains the model or joins the
+multi-million-row VLE table while rendering.
 """
 
 from __future__ import annotations
@@ -30,10 +30,17 @@ from dashboard_data import (
 )
 
 
-PAGE_OPTIONS = ["Academic Insight & Behavior", "Risk Matrix & Early Warning"]
+PAGE_OPTIONS = [
+    "Outcome & Geography",
+    "Learning Behavior",
+    "Interaction Analysis",
+    "Prediction & Action",
+]
 PAGE_LABELS = {
-    "Academic Insight & Behavior": "1 · Học tập & hành vi",
-    "Risk Matrix & Early Warning": "2 · Rủi ro & cảnh báo",
+    "Outcome & Geography": "1 · Bức tranh kết quả học tập",
+    "Learning Behavior": "2 · Các yếu tố học tập",
+    "Interaction Analysis": "3 · Kết hợp nhiều yếu tố",
+    "Prediction & Action": "4 · Dự đoán nguy cơ",
 }
 ATTEMPT_KEY = ["code_module", "code_presentation", "id_student"]
 RESULT_ORDER = ["Distinction", "Pass", "Fail", "Withdrawn"]
@@ -43,12 +50,15 @@ RESULT_COLORS = {
     "Fail": "#F97316",
     "Withdrawn": "#DC2626",
 }
-RISK_COLORS = {"Not-At-Risk": "#2563EB", "At-Risk": "#DC2626"}
+RISK_COLORS = {
+    "Không thuộc nhóm nguy cơ": "#2563EB",
+    "Có nguy cơ không đạt": "#DC2626",
+}
 LEVEL_ORDER = ["High", "Medium", "Low"]
 LEVEL_LABELS = {
-    "High": "High · Nguy hiểm",
-    "Medium": "Medium · Cảnh báo",
-    "Low": "Low · An toàn",
+    "High": "Cao · cần ưu tiên",
+    "Medium": "Trung bình · cần theo dõi",
+    "Low": "Thấp",
 }
 INK = "#0F172A"
 MUTED = "#475569"
@@ -109,6 +119,11 @@ def apply_dashboard_css() -> None:
         .definition-box {
             background: #F0FDFA; border: 1px solid #99F6E4; border-left: 5px solid #0F766E;
             border-radius: 12px; padding: .9rem 1.05rem; margin: .4rem 0 .9rem 0;
+        }
+        .term-guide {
+            background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 12px;
+            padding: .75rem 1rem; margin: .35rem 0 1rem 0; color: #334155;
+            line-height: 1.55;
         }
         </style>
         """,
@@ -178,6 +193,18 @@ def render_header(kicker: str, title: str, subtitle: str, scope: str) -> None:
     )
     st.markdown(
         f'<div class="scope-note">{html.escape(scope)}</div>',
+        unsafe_allow_html=True,
+    )
+
+
+def render_term_guide(items: list[tuple[str, str]]) -> None:
+    """Show important abbreviations and anonymised codes in the reading flow."""
+    content = " · ".join(
+        f"<b>{html.escape(term)}</b>: {html.escape(definition)}"
+        for term, definition in items
+    )
+    st.markdown(
+        f'<div class="term-guide"><b>Đọc nhanh thuật ngữ</b><br>{content}</div>',
         unsafe_allow_html=True,
     )
 
@@ -261,19 +288,28 @@ def filter_mart(
 
 
 def page_navigation() -> str:
-    st.sidebar.title("OULAD Dashboard")
-    st.sidebar.caption("Python · Streamlit · Plotly")
+    st.sidebar.title("Phân tích kết quả học tập")
+    st.sidebar.caption(
+        "Đề tài: Nghiên cứu và phân tích các yếu tố ảnh hưởng đến kết quả học tập của sinh viên đại học"
+    )
+    st.sidebar.caption("Dữ liệu OULAD · Python · Streamlit · Plotly")
     page = st.sidebar.radio(
         "Điều hướng",
         PAGE_OPTIONS,
         format_func=lambda value: PAGE_LABELS[value],
     )
     st.sidebar.divider()
-    with st.sidebar.expander("Định nghĩa nhanh"):
+    with st.sidebar.expander("Thuật ngữ dùng trong dashboard", expanded=True):
         st.markdown(
-            "- **At-Risk:** kết quả cuối là Fail hoặc Withdrawn.\n"
-            "- **Lượt học:** một sinh viên trong một module–presentation.\n"
-            "- **Ngày 105:** thời điểm chốt dữ liệu đầu vào cho model.\n"
+            "- **OULAD:** Open University Learning Analytics Dataset.\n"
+            "- **VLE:** hệ thống học trực tuyến; số click chỉ phản ánh mức độ sử dụng hệ thống.\n"
+            "- **IMD:** nhóm mức khó khăn kinh tế–xã hội của khu vực cư trú.\n"
+            "- **Có nguy cơ không đạt:** kết quả cuối là trượt hoặc bỏ học.\n"
+            "- **Lượt học:** một lần sinh viên đăng ký học một học phần trong một đợt mở lớp.\n"
+            "- **Bài tập/kiểm tra (assessment):** hoạt động được chấm điểm.\n"
+            "- **Mốc dự báo ngày 105:** chỉ dùng dữ liệu có sẵn đến ngày 105 để dự đoán.\n"
+            "- **AAA–GGG:** mã học phần đã được OULAD ẩn danh.\n"
+            "- **B/J:** đợt học bắt đầu tháng 2/tháng 10.\n"
             "- Kết quả thể hiện liên hệ, không khẳng định nhân quả."
         )
     return page
@@ -283,17 +319,17 @@ def page_one_filters(frame: pd.DataFrame) -> tuple[list[str], list[str], list[st
     st.subheader("Bộ lọc phân tích")
     columns = st.columns(3)
     modules = columns[0].multiselect(
-        "Môn học · code_module",
+        "Học phần ẩn danh · code_module",
         sorted(frame["code_module"].dropna().unique()),
         key="academic_modules",
-        placeholder="Tất cả môn học",
+        placeholder="Tất cả học phần",
     )
     available = frame.loc[frame["code_module"].isin(modules)] if modules else frame
     presentations = columns[1].multiselect(
-        "Học kỳ · code_presentation",
+        "Đợt mở lớp · code_presentation",
         sorted(available["code_presentation"].dropna().unique()),
         key="academic_presentations",
-        placeholder="Tất cả học kỳ",
+        placeholder="Tất cả đợt mở",
     )
     genders = columns[2].multiselect(
         "Giới tính · gender",
@@ -311,7 +347,7 @@ def render_academic_kpis(frame: pd.DataFrame) -> None:
     cards[0].metric("Tổng sinh viên", f"{kpis.learners:,}")
     cards[1].metric("Điểm trung bình", f"{kpis.average_assessment_score:.1f}")
     cards[2].metric("Tỷ lệ qua môn", format_percent(pass_rate))
-    cards[3].metric("Tỷ lệ At-Risk", format_percent(kpis.at_risk_rate))
+    cards[3].metric("Tỷ lệ có nguy cơ không đạt", format_percent(kpis.at_risk_rate))
 
 
 def render_region_map(base_frame: pd.DataFrame, active_region: str | None) -> None:
@@ -335,19 +371,19 @@ def render_region_map(base_frame: pd.DataFrame, active_region: str | None) -> No
         color_continuous_scale=RISK_SCALE,
         range_color=(0, 1),
         custom_data=["region", "attempts", "at_risk_count", "at_risk_rate"],
-        title="1 · Tỷ lệ At-Risk theo vùng cư trú",
+        title="1 · Tỷ lệ có nguy cơ không đạt theo vùng cư trú",
     )
     figure.update_geos(fitbounds="locations", visible=False, bgcolor="#FFFFFF")
     figure.update_traces(
         marker_line_color="#FFFFFF",
         marker_line_width=1.0,
         hovertemplate=(
-            "Vùng=%{customdata[0]}<br>At-Risk=%{customdata[3]:.1%}"
-            "<br>Lượt học=%{customdata[1]:,}<br>Số At-Risk=%{customdata[2]:,}<extra></extra>"
+            "Vùng=%{customdata[0]}<br>Nguy cơ không đạt=%{customdata[3]:.1%}"
+            "<br>Lượt học=%{customdata[1]:,}<br>Số lượt có nguy cơ=%{customdata[2]:,}<extra></extra>"
         ),
     )
     figure.update_layout(
-        coloraxis_colorbar={"title": "At-Risk", "tickformat": ".0%"}
+        coloraxis_colorbar={"title": "Nguy cơ", "tickformat": ".0%"}
     )
     polish_figure(figure, height=565, legend="none")
     event = st.plotly_chart(
@@ -367,8 +403,8 @@ def render_region_map(base_frame: pd.DataFrame, active_region: str | None) -> No
             st.session_state["academic_region"] = str(selected)
             st.rerun()
     st.caption(
-        "Bấm một vùng để lọc KPI và bốn biểu đồ còn lại. Màu đậm hơn = tỷ lệ At-Risk cao hơn; "
-        "màu không phản ánh quy mô mẫu."
+        "Bấm một vùng để lọc KPI và biểu đồ cơ cấu kết quả trên Trang 1. "
+        "Màu đậm hơn = tỷ lệ có nguy cơ không đạt cao hơn; màu không phản ánh số sinh viên."
     )
 
 
@@ -398,10 +434,10 @@ def render_outcome_drill(frame: pd.DataFrame) -> None:
     if selected_module:
         top = st.columns([4, 1])
         top[0].markdown(
-            f"**Drill-down:** Tất cả môn học → `{selected_module}` → Học kỳ"
+            f"**Drill-down:** Tất cả học phần → `{selected_module}` → Đợt mở lớp"
         )
         if top[1].button(
-            "↑ Quay lại môn học", key="reset_outcome_drill", width="stretch"
+            "↑ Quay lại học phần", key="reset_outcome_drill", width="stretch"
         ):
             st.session_state["outcome_drill_module"] = None
             st.session_state["outcome_key_version"] = (
@@ -410,18 +446,26 @@ def render_outcome_drill(frame: pd.DataFrame) -> None:
             st.rerun()
         chart_frame = frame.loc[frame["code_module"].eq(selected_module)]
         group_column = "code_presentation"
-        title = f"2 · Cơ cấu kết quả theo học kỳ của {selected_module}"
-        y_label = "Học kỳ"
+        title = f"2 · Cơ cấu kết quả theo đợt mở lớp của {selected_module}"
+        y_label = "Đợt mở lớp"
     else:
         st.caption(
-            "Drill-down: Tất cả môn học. Bấm một thanh để xem các học kỳ bên trong."
+            "AAA–GGG là mã học phần đã được ẩn danh. Bấm một thanh để xem các đợt mở lớp bên trong."
         )
         chart_frame = frame
         group_column = "code_module"
-        title = "2 · Cơ cấu kết quả theo môn học"
-        y_label = "Môn học"
+        title = "2 · Cơ cấu kết quả theo học phần ẩn danh"
+        y_label = "Học phần ẩn danh"
 
     data = outcome_percentages(chart_frame, group_column)
+    risk_order = (
+        chart_frame.groupby(group_column, observed=True)["At_Risk"]
+        .mean()
+        .sort_values()
+    )
+    data["inside_label"] = data["share"].map(
+        lambda value: f"{value:.0%}" if value >= .06 else ""
+    )
     figure = px.bar(
         data,
         x="share",
@@ -432,6 +476,7 @@ def render_outcome_drill(frame: pd.DataFrame) -> None:
         category_orders={"final_result": RESULT_ORDER},
         color_discrete_map=RESULT_COLORS,
         custom_data=["attempts"],
+        text="inside_label",
         labels={
             "share": "Tỷ trọng kết quả",
             group_column: y_label,
@@ -440,7 +485,7 @@ def render_outcome_drill(frame: pd.DataFrame) -> None:
         title=title,
     )
     figure.update_traces(
-        texttemplate="%{x:.0%}",
+        texttemplate="%{text}",
         textposition="inside",
         hovertemplate=(
             f"{y_label}=%{{y}}<br>Kết quả=%{{fullData.name}}"
@@ -448,7 +493,24 @@ def render_outcome_drill(frame: pd.DataFrame) -> None:
         ),
     )
     figure.update_xaxes(tickformat=".0%", range=[0, 1])
+    figure.update_yaxes(
+        categoryorder="array", categoryarray=risk_order.index.tolist()
+    )
     polish_figure(figure, height=470)
+    for group, rate in risk_order.items():
+        figure.add_annotation(
+            x=.995,
+            y=group,
+            xref="x",
+            yref="y",
+            text=f"Nguy cơ {rate:.0%}",
+            showarrow=False,
+            xanchor="right",
+            bgcolor="rgba(255,255,255,.92)",
+            bordercolor="#CBD5E1",
+            borderpad=3,
+            font={"size": 11, "color": INK},
+        )
     event = st.plotly_chart(
         figure,
         width="stretch",
@@ -466,6 +528,10 @@ def render_outcome_drill(frame: pd.DataFrame) -> None:
             if module in valid_modules:
                 st.session_state["outcome_drill_module"] = str(module)
                 st.rerun()
+    st.caption(
+        "Mỗi thanh luôn bằng 100%. Học phần có nguy cơ không đạt cao hơn nằm phía dưới; nhãn cuối thanh "
+        "gộp Fail + Withdrawn. B = bắt đầu tháng 2, J = bắt đầu tháng 10."
+    )
 
 
 def render_vle_timeline(
@@ -509,7 +575,7 @@ def render_vle_timeline(
         lambda values: values.rolling(7, min_periods=1).mean()
     )
     daily["Nhóm"] = daily["At_Risk"].map(
-        {0: "Not-At-Risk", 1: "At-Risk"}
+        {0: "Không thuộc nhóm nguy cơ", 1: "Có nguy cơ không đạt"}
     )
 
     figure = px.line(
@@ -517,17 +583,19 @@ def render_vle_timeline(
         x="date",
         y="avg_click_7d",
         color="Nhóm",
-        category_orders={"Nhóm": ["Not-At-Risk", "At-Risk"]},
+        category_orders={
+            "Nhóm": ["Không thuộc nhóm nguy cơ", "Có nguy cơ không đạt"]
+        },
         color_discrete_map=RISK_COLORS,
         labels={
             "date": "Ngày tương đối từ khi môn học bắt đầu",
-            "avg_click_7d": "Clicks trung bình / lượt học / ngày",
+            "avg_click_7d": "Lượt tương tác trung bình / lượt học / ngày",
         },
-        title="3 · Nhịp tương tác VLE: At-Risk so với Not-At-Risk",
+        title="3 · Mức tham gia học trực tuyến theo thời gian",
     )
     figure.update_traces(
         line={"width": 3},
-        hovertemplate="Ngày=%{x}<br>TB 7 ngày=%{y:.2f} clicks<extra></extra>",
+        hovertemplate="Ngày=%{x}<br>Trung bình 7 ngày=%{y:.2f} lượt tương tác<extra></extra>",
     )
 
     deadlines = dashboard_mart(
@@ -601,7 +669,10 @@ def render_submission_scatter(
 
     sample = submissions.sample(min(4500, len(submissions)), random_state=42)
     figure = go.Figure()
-    for at_risk, label in ((0, "Not-At-Risk"), (1, "At-Risk")):
+    for at_risk, label in (
+        (0, "Không thuộc nhóm nguy cơ"),
+        (1, "Có nguy cơ không đạt"),
+    ):
         group = sample.loc[sample["At_Risk"].eq(at_risk)]
         custom = np.column_stack(
             [
@@ -660,15 +731,15 @@ def render_submission_scatter(
         line_dash="dot",
     )
     figure.update_layout(
-        title="4 · Độ trễ nộp bài và điểm assessment",
+        title="5 · Nộp bài sớm hoặc trễ liên quan thế nào đến điểm số?",
         xaxis_title="Số ngày nộp trễ (âm = nộp sớm)",
-        yaxis_title="Điểm assessment",
+        yaxis_title="Điểm bài tập/kiểm tra",
     )
     figure.update_yaxes(range=[-2, 102])
     polish_figure(figure, height=535)
     st.plotly_chart(figure, width="stretch")
     st.caption(
-        f"Trendline và hệ số tương quan dùng toàn bộ {len(submissions):,} bài hợp lệ; "
+        f"Đường xu hướng dùng toàn bộ {len(submissions):,} bài hợp lệ; "
         f"đồ thị lấy mẫu cố định {len(sample):,} điểm để dễ đọc. Vạch dọc tại 0 là đúng hạn; "
         "kích thước điểm tăng theo số lần học trước."
     )
@@ -706,7 +777,7 @@ def render_activity_treemap(
         color="sum_click",
         color_continuous_scale=["#DBEAFE", "#2563EB", "#1E3A8A"],
         custom_data=["sum_click", "share"],
-        title="5 · Tài nguyên nào thu hút nhiều tương tác nhất?",
+        title="6 · Loại tài nguyên học trực tuyến nào được sử dụng nhiều nhất?",
     )
     figure.update_traces(
         marker={"line": {"color": "#FFFFFF", "width": 1.5}},
@@ -726,12 +797,45 @@ def render_activity_treemap(
     return str(top["activity_type"]), float(top["share"])
 
 
-def render_academic_page() -> None:
+def comparison_message(
+    frame: pd.DataFrame,
+    group_column: str,
+    label: str,
+) -> str:
+    grouped = (
+        frame.groupby(group_column, observed=True)["At_Risk"]
+        .agg(["mean", "size"])
+        .sort_values("mean")
+    )
+    if grouped.empty:
+        return f"Không đủ dữ liệu để so sánh theo {label}."
+    if len(grouped) == 1:
+        row = grouped.iloc[0]
+        return (
+            f"{label} {grouped.index[0]} có tỷ lệ nguy cơ không đạt {row['mean']:.1%} "
+            f"(N={int(row['size']):,})."
+        )
+    low, high = grouped.iloc[0], grouped.iloc[-1]
+    return (
+        f"Tỷ lệ nguy cơ không đạt theo {label.lower()} cao nhất ở {grouped.index[-1]} "
+        f"({high['mean']:.1%}) và thấp nhất ở {grouped.index[0]} ({low['mean']:.1%})."
+    )
+
+
+def render_overview_page() -> None:
     render_header(
-        "Trang 1 · Academic Insight & Behavior",
-        "Khám phá yếu tố học tập và hành vi",
-        "Nhận diện diện mạo người học, địa bàn cư trú và các hành vi liên quan đến kết quả học tập.",
-        "Phạm vi mô tả toàn khóa · một dòng dữ liệu chính = một learning attempt",
+        "Trang 1 · Bức tranh kết quả học tập",
+        "Sinh viên đang đạt kết quả như thế nào?",
+        "Nhìn tổng thể kết quả, sau đó so sánh giữa học phần và khu vực cư trú.",
+        "Phạm vi mô tả toàn khóa · một dòng = một lượt học của sinh viên trong một học phần–đợt mở",
+    )
+    render_term_guide(
+        [
+            ("AAA–GGG", "mã học phần đã được OULAD ẩn danh, không phải tên môn thật"),
+            ("B/J", "đợt học bắt đầu tháng 2/tháng 10"),
+            ("Có nguy cơ không đạt", "kết quả cuối là trượt hoặc bỏ học"),
+            ("Lượt học", "một sinh viên trong một học phần–đợt mở"),
+        ]
     )
     frame = analysis_data()
     modules, presentations, genders = page_one_filters(frame)
@@ -765,49 +869,170 @@ def render_academic_page() -> None:
                 st.session_state.get("map_key_version", 0) + 1
             )
             st.rerun()
+
     render_academic_kpis(effective)
     st.caption(
         f"Phạm vi hiện tại: {len(effective):,} lượt học · "
         f"{effective['id_student'].nunique():,} sinh viên"
         + (f" · vùng {active_region}" if active_region else " · tất cả vùng")
     )
+    risk_rate = float(effective["At_Risk"].mean())
+    withdrawn_rate = float(effective["final_result"].eq("Withdrawn").mean())
+    render_story(
+        "STORY · Nhận định chính",
+        [
+            f"Cứ 100 lượt học thì khoảng {risk_rate * 100:.0f} lượt kết thúc bằng trượt hoặc bỏ học; riêng bỏ học chiếm {withdrawn_rate:.1%}.",
+            comparison_message(effective, "code_module", "Học phần ẩn danh"),
+            comparison_message(base, "region", "Vùng")
+            + " Học phần và khu vực chỉ cho biết bối cảnh có chênh lệch, không chứng minh đó là nguyên nhân.",
+        ],
+    )
 
-    st.subheader("Địa bàn và kết quả học tập")
+    st.subheader("Kết quả khác nhau ở đâu?")
     render_region_map(base, active_region)
     render_outcome_drill(effective)
 
-    st.subheader("Hành vi học tập")
-    selected_regions = [active_region] if active_region else []
-    at_risk_clicks, not_risk_clicks = render_vle_timeline(
-        effective, modules, presentations, genders, selected_regions
+
+def filter_snapshot_context(
+    frame: pd.DataFrame,
+    modules: list[str],
+    presentations: list[str],
+    genders: list[str],
+) -> pd.DataFrame:
+    mask = pd.Series(True, index=frame.index)
+    for column, values in (
+        ("code_module", modules),
+        ("code_presentation", presentations),
+        ("gender", genders),
+    ):
+        if values:
+            mask &= frame[column].isin(values)
+    return frame.loc[mask].copy()
+
+
+def add_behavior_bands(frame: pd.DataFrame) -> pd.DataFrame:
+    data = frame.copy()
+    labels = ["25% thấp nhất", "Nhóm 2", "Nhóm 3", "25% cao nhất"]
+    data["engagement_quartile"] = pd.qcut(
+        data["vle_total_clicks_cutoff"].rank(method="first"),
+        q=4,
+        labels=labels,
     )
-    correlation = render_submission_scatter(
-        modules, presentations, genders, selected_regions
+    completion = data["assessment_completion_rate_cutoff"]
+    data["completion_band"] = np.select(
+        [
+            completion.eq(0),
+            completion.gt(0) & completion.le(.5),
+            completion.gt(.5) & completion.lt(1),
+            completion.eq(1),
+        ],
+        ["0%", "Trên 0% đến 50%", "Trên 50% đến dưới 100%", "100%"],
+        default="Không xác định",
     )
-    top_activity, top_share = render_activity_treemap(
-        modules, presentations, genders, selected_regions
+    return data
+
+
+def render_completion_chart(frame: pd.DataFrame) -> tuple[float, float]:
+    order = ["0%", "Trên 0% đến 50%", "Trên 50% đến dưới 100%", "100%"]
+    grouped = (
+        frame.groupby("completion_band", observed=True)
+        .agg(at_risk_rate=("At_Risk", "mean"), attempts=("id_student", "size"))
+        .reindex(order)
+        .dropna(subset=["at_risk_rate"])
+        .reset_index()
+    )
+    figure = px.bar(
+        grouped,
+        x="completion_band",
+        y="at_risk_rate",
+        color="at_risk_rate",
+        color_continuous_scale=RISK_SCALE,
+        range_color=(0, 1),
+        custom_data=["attempts"],
+        text="at_risk_rate",
+        labels={
+            "completion_band": "Mức hoàn thành bài đã đến hạn",
+            "at_risk_rate": "Tỷ lệ có nguy cơ không đạt",
+        },
+        title="4 · Hoàn thành bài tập và nguy cơ không đạt",
+    )
+    figure.update_traces(
+        texttemplate="%{text:.1%}",
+        textposition="outside",
+        hovertemplate=(
+            "Mức hoàn thành=%{x}<br>Nguy cơ không đạt=%{y:.1%}"
+            "<br>N=%{customdata[0]:,}<extra></extra>"
+        ),
+    )
+    figure.update_yaxes(tickformat=".0%", range=[0, 1.08])
+    figure.update_layout(coloraxis_showscale=False)
+    polish_figure(figure, height=470, legend="none")
+    st.plotly_chart(figure, width="stretch")
+    st.caption(
+        "Chỉ tính những bài tập/kiểm tra đã đến hạn trước hoặc tại ngày 105. "
+        "Biểu đồ cho thấy mối liên hệ, không khẳng định đây là nguyên nhân duy nhất."
+    )
+    indexed = grouped.set_index("completion_band")["at_risk_rate"]
+    return float(indexed.get("0%", np.nan)), float(indexed.get("100%", np.nan))
+
+
+def render_behavior_page() -> None:
+    render_header(
+        "Trang 2 · Các yếu tố học tập",
+        "Yếu tố học tập nào liên quan rõ nhất đến kết quả?",
+        "So sánh mức tham gia học trực tuyến, tiến độ làm bài và thời điểm nộp bài.",
+        "Chỉ dùng dữ liệu có đến ngày 105; biểu đồ cho thấy mối liên hệ, không khẳng định nguyên nhân",
+    )
+    render_term_guide(
+        [
+            ("VLE", "hệ thống học trực tuyến của trường"),
+            ("Lượt tương tác", "số lần sử dụng hệ thống, không phải thời gian học hay điểm danh"),
+            ("Bài đánh giá", "bài tập hoặc bài kiểm tra được chấm điểm"),
+            ("Ngày 105", "mốc dữ liệu được dùng để đánh giá và dự đoán sớm"),
+        ]
+    )
+    frame = analysis_data()
+    modules, presentations, genders = page_one_filters(frame)
+    filtered = filter_attempts(
+        frame, modules=modules, presentations=presentations, genders=genders
+    )
+    snapshot = filter_snapshot_context(
+        feature_snapshot(), modules, presentations, genders
+    )
+    if filtered.empty or snapshot.empty:
+        st.warning("Bộ lọc hiện tại không có đủ lượt học cho phân tích hành vi.")
+        return
+    snapshot = add_behavior_bands(snapshot)
+
+    engagement = snapshot.groupby("engagement_quartile", observed=True)["At_Risk"].mean()
+    low_click_rate = float(engagement.iloc[0])
+    high_click_rate = float(engagement.iloc[-1])
+    completion = snapshot.groupby("completion_band", observed=True)["At_Risk"].mean()
+    zero_rate = float(completion.get("0%", np.nan))
+    full_rate = float(completion.get("100%", np.nan))
+    render_story(
+        "STORY · Hai yếu tố liên quan rõ nhất",
+        [
+            f"Hoàn thành bài là yếu tố phân biệt rõ nhất: nhóm chưa hoàn thành bài đến hạn có nguy cơ không đạt {format_percent(zero_rate)}, còn nhóm hoàn thành đủ là {format_percent(full_rate)}.",
+            f"Mức tham gia học trực tuyến cũng liên quan rõ: nhóm 25% ít tương tác nhất có nguy cơ không đạt {low_click_rate:.1%}, so với {high_click_rate:.1%} ở nhóm 25% tương tác nhiều nhất.",
+            "Vì vậy, nên ưu tiên hỗ trợ sinh viên vừa chưa hoàn thành bài đến hạn vừa ít tham gia hệ thống học trực tuyến.",
+        ],
     )
 
-    risk_rate = effective["At_Risk"].mean()
-    pass_rate = effective["final_result"].isin(["Pass", "Distinction"]).mean()
-    click_message = (
-        f"At-Risk trung bình {at_risk_clicks:,.0f} clicks/lượt học, so với "
-        f"{not_risk_clicks:,.0f} ở Not-At-Risk."
-        if pd.notna(at_risk_clicks) and pd.notna(not_risk_clicks)
-        else "Chưa đủ dữ liệu VLE để so sánh hai nhóm."
+    render_vle_timeline(filtered, modules, presentations, genders, [])
+    render_completion_chart(snapshot)
+    correlation = render_submission_scatter(modules, presentations, genders, [])
+    top_activity, top_share = render_activity_treemap(
+        modules, presentations, genders, []
     )
-    corr_message = (
-        f"Độ trễ và điểm có tương quan Pearson r={correlation:.2f}; đây là liên hệ, không phải quan hệ nhân quả."
-        if pd.notna(correlation)
-        else "Chưa đủ bài nộp để tính tương quan độ trễ–điểm."
+    delay_message = (
+        "nộp càng trễ thường đi cùng điểm thấp hơn"
+        if pd.notna(correlation) and correlation < 0
+        else "chưa thấy xu hướng rõ giữa thời điểm nộp và điểm"
     )
-    render_story(
-        "Câu chuyện dữ liệu · Trang 1",
-        [
-            f"Trong phạm vi đang xem, tỷ lệ qua môn là {pass_rate:.1%} và At-Risk là {risk_rate:.1%}.",
-            click_message,
-            f"{corr_message} Tài nguyên dẫn đầu là {top_activity} ({top_share:.1%} tổng click).",
-        ],
+    st.info(
+        f"Đọc thêm: {delay_message}; loại tài nguyên được dùng nhiều nhất là "
+        f"{top_activity} ({top_share:.1%} tổng click trong phạm vi lọc)."
     )
 
 
@@ -840,6 +1065,109 @@ def prepare_risk_frame() -> pd.DataFrame:
     return frame
 
 
+def prepare_interaction_frame() -> pd.DataFrame:
+    columns = ATTEMPT_KEY + [
+        "gender",
+        "highest_education",
+        "imd_band",
+        "num_of_prev_attempts",
+        "At_Risk",
+        "vle_total_clicks_cutoff",
+        "assessment_completion_rate_cutoff",
+        "assessment_weighted_score_cutoff",
+    ]
+    frame = add_behavior_bands(feature_snapshot()[columns])
+    labels = ["25% thấp nhất", "Nhóm 2", "Nhóm 3", "25% cao nhất"]
+    score = frame["assessment_weighted_score_cutoff"]
+    has_score = score.notna()
+    frame["assessment_score_quartile"] = "Chưa có assessment được chấm"
+    frame.loc[has_score, "assessment_score_quartile"] = pd.qcut(
+        score.loc[has_score].rank(method="first"),
+        q=4,
+        labels=labels,
+    ).astype(str)
+    frame["actual_at_risk"] = frame["At_Risk"].astype(int)
+    frame["imd_band"] = (
+        frame["imd_band"].replace({"10-20": "10-20%"}).fillna("Không xác định")
+    )
+    frame["highest_education"] = frame["highest_education"].fillna(
+        "Không xác định"
+    )
+    return frame
+
+
+def render_engagement_assessment_heatmap(
+    frame: pd.DataFrame,
+) -> tuple[float, int, float, int]:
+    row_order = ["25% thấp nhất", "Nhóm 2", "Nhóm 3", "25% cao nhất"]
+    column_order = row_order + ["Chưa có assessment được chấm"]
+    grouped = (
+        frame.groupby(
+            ["engagement_quartile", "assessment_score_quartile"],
+            observed=True,
+        )
+        .agg(at_risk_rate=("At_Risk", "mean"), attempts=("id_student", "size"))
+        .reset_index()
+    )
+    rate = grouped.pivot(
+        index="engagement_quartile",
+        columns="assessment_score_quartile",
+        values="at_risk_rate",
+    ).reindex(index=row_order, columns=column_order)
+    count = (
+        grouped.pivot(
+            index="engagement_quartile",
+            columns="assessment_score_quartile",
+            values="attempts",
+        )
+        .reindex(index=row_order, columns=column_order)
+        .fillna(0)
+    )
+    text = np.empty(rate.shape, dtype=object)
+    for row in range(rate.shape[0]):
+        for column in range(rate.shape[1]):
+            value = rate.iloc[row, column]
+            text[row, column] = (
+                "—"
+                if pd.isna(value)
+                else f"{value:.0%}<br>N={int(count.iloc[row, column]):,}"
+            )
+    figure = go.Figure(
+        go.Heatmap(
+            z=rate.values,
+            x=rate.columns,
+            y=rate.index,
+            text=text,
+            texttemplate="%{text}",
+            customdata=count.values,
+            colorscale=RISK_SCALE,
+            zmin=0,
+            zmax=1,
+            colorbar={"title": "Nguy cơ", "tickformat": ".0%"},
+            hovertemplate=(
+                "Mức tham gia trực tuyến=%{y}<br>Điểm bài tập=%{x}<br>Nguy cơ không đạt=%{z:.1%}"
+                "<br>N=%{customdata:,}<extra></extra>"
+            ),
+        )
+    )
+    figure.update_layout(
+        title="7 · Khi mức tham gia trực tuyến và điểm bài tập cùng thấp",
+        xaxis_title="Nhóm điểm bài tập đến ngày 105",
+        yaxis_title="Nhóm mức tham gia học trực tuyến đến ngày 105",
+    )
+    polish_figure(figure, height=550, legend="none")
+    st.plotly_chart(figure, width="stretch")
+    st.caption(
+        "25% thấp nhất/cao nhất được tính trong phạm vi phân tích. Mỗi ô kết hợp hai yếu tố; "
+        "N là số lượt học trong ô."
+    )
+    low_rate = float(rate.loc["25% thấp nhất", "25% thấp nhất"])
+    low_n = int(count.loc["25% thấp nhất", "25% thấp nhất"])
+    high_rate = float(rate.loc["25% cao nhất", "25% cao nhất"])
+    high_n = int(count.loc["25% cao nhất", "25% cao nhất"])
+    return low_rate, low_n, high_rate, high_n
+
+
 def imd_sort_key(value: str) -> tuple[int, str]:
     if value == "Không xác định":
         return (999, value)
@@ -850,10 +1178,10 @@ def imd_sort_key(value: str) -> tuple[int, str]:
 
 
 def page_two_filters(frame: pd.DataFrame) -> tuple[list[str], list[str]]:
-    st.subheader("Bộ lọc can thiệp")
+    st.subheader("Bộ lọc danh sách hỗ trợ")
     columns = st.columns(2)
     levels = columns[0].multiselect(
-        "Risk Level",
+        "Mức nguy cơ dự đoán",
         LEVEL_ORDER,
         format_func=lambda value: LEVEL_LABELS[value],
         key="risk_levels",
@@ -863,10 +1191,10 @@ def page_two_filters(frame: pd.DataFrame) -> tuple[list[str], list[str]]:
         frame["imd_band"].astype(str).unique(), key=imd_sort_key
     )
     imd_bands = columns[1].multiselect(
-        "Thu nhập khu vực · imd_band",
+        "Mức khó khăn kinh tế–xã hội của khu vực",
         imd_options,
         key="risk_imd_bands",
-        placeholder="Tất cả nhóm IMD",
+        placeholder="Tất cả nhóm khu vực",
     )
     return levels, imd_bands
 
@@ -881,9 +1209,9 @@ def render_model_kpis(frame: pd.DataFrame) -> tuple[float, float, int]:
     )
     high_count = int(frame["risk_level"].eq("High").sum())
     cards = st.columns(3)
-    cards[0].metric("Model Accuracy", format_percent(accuracy))
-    cards[1].metric("Recall At-Risk", format_percent(recall))
-    cards[2].metric("Cần can thiệp khẩn cấp", f"{high_count:,}")
+    cards[0].metric("Tỷ lệ dự đoán đúng", format_percent(accuracy))
+    cards[1].metric("Tỷ lệ phát hiện nhóm nguy cơ", format_percent(recall))
+    cards[2].metric("Lượt cần ưu tiên hỗ trợ", f"{high_count:,}")
     return float(accuracy), float(recall), high_count
 
 
@@ -943,22 +1271,23 @@ def render_interaction_heatmap(
             colorscale=RISK_SCALE,
             zmin=0,
             zmax=1,
-            colorbar={"title": "At-Risk", "tickformat": ".0%"},
+            colorbar={"title": "Nguy cơ", "tickformat": ".0%"},
             hovertemplate=(
-                "Học vấn=%{y}<br>IMD=%{x}<br>At-Risk=%{z:.1%}"
+                "Học vấn=%{y}<br>Mức khó khăn khu vực=%{x}<br>Nguy cơ không đạt=%{z:.1%}"
                 "<br>N=%{customdata:,}<extra></extra>"
             ),
         )
     )
     figure.update_layout(
-        title="6 · Tương tác giữa học vấn trước đó và kinh tế khu vực",
-        xaxis_title="Mức thu nhập khu vực · imd_band",
+        title="8 · Trình độ đầu vào và mức khó khăn kinh tế của khu vực",
+        xaxis_title="Nhóm mức khó khăn kinh tế–xã hội của khu vực",
         yaxis_title="Học vấn trước đó",
     )
     polish_figure(figure, height=535, legend="none")
     st.plotly_chart(figure, width="stretch")
     st.caption(
-        "Mỗi ô là một tổ hợp hai yếu tố; màu = tỷ lệ At-Risk thực tế, nhãn N giúp tránh kết luận từ nhóm quá nhỏ."
+        "Mỗi ô kết hợp hai yếu tố; màu thể hiện tỷ lệ có nguy cơ không đạt, N là số lượt học. "
+        "Biểu đồ chỉ mô tả bối cảnh, không dùng để quy kết hoàn cảnh gây ra kết quả."
     )
     eligible = grouped.loc[grouped["attempts"].ge(30)].sort_values(
         "at_risk_rate", ascending=False
@@ -997,10 +1326,10 @@ def render_attempt_boxplot(frame: pd.DataFrame) -> tuple[float, float]:
         color_discrete_sequence=["#93C5FD", "#60A5FA", "#F59E0B", "#DC2626"],
         points="outliers",
         labels={
-            "previous_attempt_group": "Số lần học module trước đó",
-            "assessment_weighted_score_cutoff": "Điểm assessment có trọng số đến ngày 105",
+            "previous_attempt_group": "Số lần từng học học phần này",
+            "assessment_weighted_score_cutoff": "Điểm bài tập có trọng số đến ngày 105",
         },
-        title="7 · Phân bố điểm theo số lần học trước",
+        title="9 · Điểm bài tập theo số lần từng học lại học phần",
     )
     figure.update_traces(
         hovertemplate="Nhóm=%{x}<br>Điểm=%{y:.1f}<extra></extra>"
@@ -1016,6 +1345,70 @@ def render_attempt_boxplot(frame: pd.DataFrame) -> tuple[float, float]:
     return float(medians.get("0", np.nan)), float(medians.get("3+", np.nan))
 
 
+def render_interaction_page() -> None:
+    render_header(
+        "Trang 3 · Kết hợp nhiều yếu tố",
+        "Điều gì xảy ra khi nhiều yếu tố bất lợi xuất hiện cùng lúc?",
+        "Xem đồng thời mức tham gia trực tuyến, điểm bài tập và lịch sử học lại.",
+        "Dữ liệu có đến ngày 105 · mỗi ô đều ghi số lượt học (N)",
+    )
+    render_term_guide(
+        [
+            ("Kết hợp yếu tố", "xem hai đặc điểm cùng lúc thay vì tách riêng"),
+            ("Nhóm 25%", "chia dữ liệu thành bốn nhóm có quy mô gần bằng nhau"),
+            ("IMD", "nhóm mức khó khăn kinh tế–xã hội của khu vực cư trú"),
+            ("N", "số lượt học trong nhóm đang hiển thị"),
+        ]
+    )
+    base = prepare_interaction_frame()
+    modules, presentations, genders = page_one_filters(base)
+    frame = filter_snapshot_context(base, modules, presentations, genders)
+    if frame.empty:
+        st.warning("Bộ lọc hiện tại không có lượt học trong snapshot ngày 105.")
+        return
+
+    low_profile = frame.loc[
+        frame["engagement_quartile"].astype(str).eq("25% thấp nhất")
+        & frame["assessment_score_quartile"].eq("25% thấp nhất")
+    ]
+    high_profile = frame.loc[
+        frame["engagement_quartile"].astype(str).eq("25% cao nhất")
+        & frame["assessment_score_quartile"].eq("25% cao nhất")
+    ]
+    low_rate = float(low_profile["At_Risk"].mean())
+    high_rate = float(high_profile["At_Risk"].mean())
+    low_n = len(low_profile)
+    high_n = len(high_profile)
+    previous_rates = frame.assign(
+        has_previous_attempt=frame["num_of_prev_attempts"].ge(1)
+    ).groupby("has_previous_attempt")["At_Risk"].mean()
+    first_rate = float(previous_rates.get(False, np.nan))
+    repeat_rate = float(previous_rates.get(True, np.nan))
+    previous_message = (
+        f"Sinh viên từng học học phần này trước đó có nguy cơ không đạt {repeat_rate:.1%}, "
+        f"cao hơn nhóm học lần đầu {first_rate:.1%}."
+        if pd.notna(first_rate) and pd.notna(repeat_rate)
+        else "Phạm vi lọc chưa đủ dữ liệu để so sánh nhóm học lần đầu và nhóm từng học trước."
+    )
+    profile_message = (
+        f"Khi mức tham gia trực tuyến và điểm bài tập đều thấp, nguy cơ không đạt là {low_rate:.1%}; "
+        f"khi cả hai đều cao, tỷ lệ này chỉ còn {high_rate:.1%}."
+        if pd.notna(low_rate) and pd.notna(high_rate) and low_n and high_n
+        else "Phạm vi lọc chưa đủ cả hai hồ sơ VLE thấp–điểm thấp và VLE cao–điểm cao để so sánh."
+    )
+    render_story(
+        "STORY · Nhận định khi kết hợp nhiều yếu tố",
+        [
+            profile_message,
+            previous_message,
+            "Kết luận trọng tâm là tiến độ học và mức tham gia; học vấn, hoàn cảnh khu vực và nơi ở chỉ là bối cảnh để xem xét thêm, không phải căn cứ quy kết cá nhân.",
+        ],
+    )
+    render_engagement_assessment_heatmap(frame)
+    render_interaction_heatmap(frame)
+    render_attempt_boxplot(frame)
+
+
 def render_risk_gauge(frame: pd.DataFrame) -> float:
     mean_probability = float(frame["risk_probability"].mean())
     figure = go.Figure(
@@ -1023,7 +1416,7 @@ def render_risk_gauge(frame: pd.DataFrame) -> float:
             mode="gauge+number",
             value=mean_probability * 100,
             number={"suffix": "%", "valueformat": ".1f", "font": {"size": 44}},
-            title={"text": "Xác suất At-Risk trung bình", "font": {"size": 18}},
+            title={"text": "Nguy cơ không đạt trung bình", "font": {"size": 18}},
             gauge={
                 "axis": {
                     "range": [0, 100],
@@ -1044,13 +1437,13 @@ def render_risk_gauge(frame: pd.DataFrame) -> float:
             },
         )
     )
-    figure.update_layout(title="8 · Mức rủi ro dự báo của nhóm đang xem")
+    figure.update_layout(title="10 · Mức nguy cơ không đạt của nhóm đang xem")
     polish_figure(figure, height=430, legend="none")
     figure.update_layout(margin={"l": 50, "r": 60, "t": 78, "b": 45})
     st.plotly_chart(figure, width="stretch")
     st.caption(
-        "Dải can thiệp: Low <40%, Medium 40–<70%, High ≥70%. Vạch tím 41,5% là threshold phân loại của model; "
-        "risk level phục vụ ưu tiên can thiệp, không thay đổi nhãn dự báo đã công bố."
+        "Mức ưu tiên hỗ trợ: thấp dưới 40%, trung bình từ 40% đến dưới 70%, cao từ 70%. "
+        "Vạch tím 41,5% là ngưỡng mô hình dùng để xếp một lượt học vào nhóm có nguy cơ."
     )
     return mean_probability
 
@@ -1059,10 +1452,10 @@ def render_error_donut(frame: pd.DataFrame) -> tuple[int, int, int, int]:
     counts = frame["error_type"].value_counts()
     order = ["TP", "TN", "FP", "FN"]
     labels = {
-        "TP": "Phát hiện đúng At-Risk",
-        "TN": "Nhận diện đúng Not-At-Risk",
+        "TP": "Phát hiện đúng nhóm nguy cơ",
+        "TN": "Nhận diện đúng nhóm không nguy cơ",
         "FP": "Cảnh báo nhầm",
-        "FN": "Bỏ sót At-Risk",
+        "FN": "Bỏ sót người có nguy cơ",
     }
     colors = {
         "TP": "#DC2626",
@@ -1082,7 +1475,7 @@ def render_error_donut(frame: pd.DataFrame) -> tuple[int, int, int, int]:
         color="error_type",
         color_discrete_map=colors,
         category_orders={"error_type": order},
-        title="9 · Thực tế và dự báo khớp nhau ra sao?",
+        title="11 · Kết quả dự đoán",
     )
     figure.update_traces(
         textposition="inside",
@@ -1092,35 +1485,46 @@ def render_error_donut(frame: pd.DataFrame) -> tuple[int, int, int, int]:
         ),
         marker={"line": {"color": "#FFFFFF", "width": 2}},
     )
-    polish_figure(figure, height=470)
+    polish_figure(figure, height=500)
+    figure.update_layout(
+        legend={
+            "orientation": "h",
+            "yanchor": "top",
+            "y": -.08,
+            "xanchor": "left",
+            "x": 0,
+            "title_text": "",
+        },
+        margin={"l": 40, "r": 35, "t": 78, "b": 110},
+    )
     st.plotly_chart(figure, width="stretch")
     tp, tn, fp, fn = (int(counts.get(value, 0)) for value in order)
     st.caption(
-        f"TP={tp:,} · TN={tn:,} · FP={fp:,} · FN={fn:,}. "
-        "Sai số cần chú ý nhất là FN: người At-Risk bị bỏ sót."
+        f"Phát hiện đúng nhóm nguy cơ: {tp:,} · nhận diện đúng nhóm không nguy cơ: {tn:,} · "
+        f"cảnh báo nhầm: {fp:,} · bỏ sót: {fn:,}."
     )
     return tp, tn, fp, fn
 
 
 def render_action_table(frame: pd.DataFrame) -> None:
     title, action = st.columns([4, 1])
-    title.subheader("Bảng hỗ trợ hành động · Student Action List")
+    title.subheader("Danh sách sinh viên cần xem xét hỗ trợ")
 
     def select_high_risk() -> None:
         st.session_state["risk_levels"] = ["High"]
 
     action.button(
-        "Chỉ xem High Risk",
+        "Chỉ xem mức nguy cơ cao",
         key="select_high_risk_action",
         on_click=select_high_risk,
         width="stretch",
-        help="Một click để lọc toàn bộ Trang 2 và danh sách về nhóm xác suất ≥70%.",
+        help="Một click để lọc toàn bộ Trang 4 và danh sách về nhóm xác suất ≥70%.",
     )
     candidates = frame.loc[frame["risk_level"].eq("High")].sort_values(
         "risk_probability", ascending=False
     )
     if candidates.empty:
-        st.info("Bộ lọc hiện tại không có sinh viên High Risk (xác suất ≥70%).")
+        st.info("Bộ lọc hiện tại không có lượt học với nguy cơ từ 70% trở lên.")
         return
     table = candidates[
         [
@@ -1133,11 +1537,11 @@ def render_action_table(frame: pd.DataFrame) -> None:
         ]
     ].head(100).rename(
         columns={
-            "id_student": "student_id",
-            "code_module": "module",
-            "code_presentation": "presentation",
-            "imd_band": "IMD",
-            "predicted_status": "model_status",
+            "id_student": "Mã sinh viên",
+            "code_module": "Học phần",
+            "code_presentation": "Đợt mở lớp",
+            "imd_band": "Nhóm khu vực",
+            "predicted_status": "Kết quả dự đoán",
         }
     )
     table["Cảnh báo"] = table["risk_probability"].map(
@@ -1150,39 +1554,47 @@ def render_action_table(frame: pd.DataFrame) -> None:
         height=420,
         column_config={
             "risk_probability": st.column_config.NumberColumn(
-                "risk_probability", format="percent"
+                "Xác suất không đạt", format="percent"
             ),
             "Cảnh báo": st.column_config.TextColumn(
-                "Data bar",
+                "Mức cảnh báo",
                 help="Mỗi ô đỏ tương ứng khoảng 10 điểm phần trăm rủi ro.",
             ),
         },
     )
     st.caption(
-        f"Hiển thị tối đa 100/{len(candidates):,} lượt High Risk trong phạm vi IMD/risk filter. "
-        "Dùng Risk Level = High để toàn bộ trang và danh sách cùng tập trung vào nhóm can thiệp."
+        f"Hiển thị tối đa 100/{len(candidates):,} lượt có nguy cơ cao trong phạm vi bộ lọc. "
+        "Danh sách giúp giảng viên biết nên kiểm tra và liên hệ ai trước."
     )
 
 
-def render_risk_page() -> None:
+def render_prediction_page() -> None:
     render_header(
-        "Trang 2 · Risk Matrix & Early Warning",
-        "Ma trận rủi ro và mô hình dự báo can thiệp",
-        "Phân tích tương tác đa biến và dùng Logistic Regression để ưu tiên cảnh báo sớm.",
-        "Test split · cutoff ngày 105 · model lr-oulad-c105-s42-v4 · không huấn luyện lại trong dashboard",
+        "Trang 4 · Dự đoán nguy cơ",
+        "Dự đoán sinh viên có nguy cơ không đạt",
+        "Dùng dữ liệu 105 ngày đầu để dự đoán khả năng kết thúc bằng trượt hoặc bỏ học.",
+        "Tập kiểm tra độc lập · dữ liệu có đến ngày 105 · mô hình không được huấn luyện lại trong dashboard",
+    )
+    render_term_guide(
+        [
+            ("Logistic Regression", "mô hình ước lượng xác suất không đạt"),
+            ("Tỷ lệ dự đoán đúng", "trong 100 lượt học, mô hình đoán đúng bao nhiêu lượt"),
+            ("Tỷ lệ phát hiện", "trong 100 lượt thực sự có nguy cơ, mô hình tìm được bao nhiêu lượt"),
+            ("Bỏ sót", "lượt thực sự có nguy cơ nhưng mô hình không cảnh báo"),
+        ]
     )
     st.markdown(
         """
-        <div class="definition-box"><b>Model dự báo gì?</b><br>
-        Từ dữ liệu có đến ngày 105, Logistic Regression ước lượng xác suất một <b>lượt học</b>
-        kết thúc bằng <b>Fail hoặc Withdrawn</b>. Đây là phân loại At-Risk, không phải dự báo điểm.</div>
+        <div class="definition-box"><b>Mô hình dự đoán gì?</b><br>
+        Từ dữ liệu có đến ngày 105, mô hình ước lượng khả năng một <b>lượt học</b>
+        kết thúc bằng <b>trượt hoặc bỏ học</b>. Mô hình <b>không dự đoán điểm số chính xác</b>.</div>
         """,
         unsafe_allow_html=True,
     )
     try:
         verification = model_table("model_verification.csv")
         if "status" not in verification or not verification["status"].eq("PASS").all():
-            st.error("Model verification chưa PASS toàn bộ; dashboard không công bố dự báo.")
+            st.error("Kiểm tra mô hình chưa đạt; dashboard không công bố dự báo.")
             return
         base = prepare_risk_frame()
     except (FileNotFoundError, ValueError) as exc:
@@ -1197,42 +1609,32 @@ def render_risk_page() -> None:
         mask &= base["imd_band"].isin(imd_bands)
     frame = base.loc[mask].copy()
     if frame.empty:
-        st.warning("Bộ lọc Risk Level/IMD hiện tại không có lượt học trong test split.")
+        st.warning("Bộ lọc hiện tại không có lượt học trong tập dữ liệu kiểm tra.")
         return
 
     accuracy, recall, high_count = render_model_kpis(frame)
     st.caption(
-        f"KPI tính trên {len(frame):,} lượt thuộc test split trong bộ lọc hiện tại. "
-        "Metric công bố toàn test: Accuracy 82,7% · Recall At-Risk 73,5%."
+        f"Các chỉ số phía trên tính trên {len(frame):,} lượt học trong bộ lọc hiện tại. "
+        "Trên toàn bộ tập kiểm tra, mô hình dự đoán đúng 82,7% và phát hiện 73,5% số lượt thực sự có nguy cơ."
     )
 
-    st.subheader("Tương tác đa biến và phân bố điểm")
-    education, imd, top_rate, top_n = render_interaction_heatmap(frame)
-    median_zero, median_three = render_attempt_boxplot(frame)
-
-    st.subheader("Kết quả dự báo và ưu tiên can thiệp")
-    left, right = st.columns(2)
-    with left:
-        mean_probability = render_risk_gauge(frame)
-    with right:
-        _tp, _tn, _fp, fn = render_error_donut(frame)
-    render_action_table(frame)
-
-    median_message = (
-        f"Điểm trung vị đến ngày 105 là {median_zero:.1f} ở nhóm chưa học trước và "
-        f"{median_three:.1f} ở nhóm 3+ lần."
-        if pd.notna(median_zero) and pd.notna(median_three)
-        else "Một số nhóm số lần học trước chưa đủ dữ liệu điểm để so sánh trung vị."
-    )
+    fn = int(frame["error_type"].eq("FN").sum())
     render_story(
-        "Câu chuyện dữ liệu · Trang 2",
+        "STORY · Mô hình dự đoán điều gì?",
         [
-            f"Tổ hợp có rủi ro cao nhất với N≥30 là {education} × IMD {imd}: {top_rate:.1%} (N={top_n:,}).",
-            median_message,
-            f"Xác suất At-Risk trung bình {mean_probability:.1%}; có {high_count:,} lượt High Risk. "
-            f"Model đúng {accuracy:.1%}, phát hiện {recall:.1%} At-Risk và bỏ sót {fn:,} lượt.",
+            f"Mô hình dự đoán một lượt học có kết thúc bằng trượt hoặc bỏ học hay không; trong phạm vi đang xem, mô hình đúng khoảng {accuracy * 100:.0f}/100 lượt.",
+            f"Trong 100 lượt thực sự có nguy cơ, mô hình phát hiện khoảng {recall * 100:.0f}; vẫn còn {fn:,} lượt bị bỏ sót trong phạm vi đang xem.",
+            f"Có {high_count:,} lượt ở mức nguy cơ cao. Danh sách bên dưới giúp ưu tiên kiểm tra tiến độ làm bài và mức tham gia học trực tuyến trước khi liên hệ hỗ trợ.",
         ],
     )
+
+    st.subheader("Kết quả dự đoán và danh sách ưu tiên hỗ trợ")
+    left, right = st.columns(2)
+    with left:
+        render_risk_gauge(frame)
+    with right:
+        render_error_donut(frame)
+    render_action_table(frame)
     st.info(
         "Danh sách là công cụ ưu tiên hỗ trợ; không dùng model để tự động quyết định kết quả hay xử phạt người học."
     )
@@ -1241,10 +1643,14 @@ def render_risk_page() -> None:
 def main() -> None:
     apply_dashboard_css()
     page = page_navigation()
-    if page == "Academic Insight & Behavior":
-        render_academic_page()
+    if page == "Outcome & Geography":
+        render_overview_page()
+    elif page == "Learning Behavior":
+        render_behavior_page()
+    elif page == "Interaction Analysis":
+        render_interaction_page()
     else:
-        render_risk_page()
+        render_prediction_page()
 
 
 if __name__ == "__main__":

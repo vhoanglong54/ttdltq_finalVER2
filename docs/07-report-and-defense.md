@@ -16,15 +16,15 @@ Một người thực hiện chính chịu trách nhiệm hiểu và trình bày
 
 Báo cáo phải đạt **ít nhất 40 trang** và dùng trích dẫn IEEE. Sơ đồ pipeline: **bài toán → OULAD → audit/cleaning → join/feature → EDA/hypothesis → insight/risk profile → Logistic Regression → dashboard Python → báo cáo/demo**.
 
-## Kịch bản storytelling khi demo
+## Kịch bản Story khi demo
 
 1. Nêu câu hỏi trung tâm, hạt lượt học và giới hạn dữ liệu quan sát.
-2. Trang Academic Insight & Behavior trả lời kết quả, không gian, VLE, độ trễ nộp bài và loại tài nguyên.
-3. Demo map cross-filter và drill từ module xuống presentation.
-4. Trang Risk Matrix & Early Warning trình bày interaction education × IMD, lịch sử học lại, xác suất và sai số.
-5. Student Action List chuyển output model thành danh sách High Risk để ưu tiên hỗ trợ.
-6. Phân biệt threshold model 41,5% với dải can thiệp Low/Medium/High 40%/70%.
-7. Kết luận sáu insight động, hành động thận trọng và giới hạn.
+2. Trang Bức tranh kết quả nêu tỷ lệ qua môn/trượt/bỏ học; học phần và vùng chỉ là bối cảnh so sánh.
+3. Demo map cross-filter và drill từ học phần xuống đợt mở.
+4. Trang Các yếu tố học tập kết luận hoàn thành bài là yếu tố liên quan rõ nhất, sau đó đến mức tham gia học trực tuyến.
+5. Trang Kết hợp nhiều yếu tố so sánh nhóm thấp ở cả mức tham gia và điểm với nhóm cao ở cả hai; nêu thêm lịch sử học lại.
+6. Trang Dự đoán nguy cơ nói rõ mô hình dự đoán trượt/bỏ học chứ không dự đoán điểm; diễn giải số dự đoán đúng, số phát hiện được và số bỏ sót bằng ngôn ngữ “trong 100 lượt học”.
+7. Kết luận Story, hành động thận trọng và giới hạn.
 
 ## Nội dung phải tự giải thích được
 

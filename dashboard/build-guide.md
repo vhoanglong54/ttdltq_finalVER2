@@ -30,8 +30,10 @@ python -m unittest discover -s tests -v
 
 Expected AppTest:
 
-- Academic page: 5 Plotly charts, 4 metrics, 0 exception.
-- Risk page: 4 Plotly charts, 3 metrics, 1 dataframe, 0 exception.
+- Trang 1: 2 Plotly charts, 4 metrics, 0 exception.
+- Trang 2: 4 Plotly charts, 0 exception.
+- Trang 3: 3 Plotly charts, 0 exception.
+- Trang 4: 2 Plotly charts, 3 metrics, 1 dataframe, 0 exception.
 
 ## 4. Quy tắc tính
 
@@ -39,7 +41,7 @@ Expected AppTest:
 - Avg Score = tổng score / số score hợp lệ.
 - VLE daily average chia cho toàn bộ attempts của nhóm, kể cả ngày không click.
 - Scatter chỉ sample để render; correlation/trendline phải dùng toàn subset.
-- Page 2 mặc định test split. Published metrics toàn test không bị thay bằng subgroup metric.
+- Chỉ Trang 4 dùng test split. Published metrics toàn test không bị thay bằng subgroup metric.
 - Risk band can thiệp 40%/70% khác với classification threshold 41,5%.
 - App không load joblib và không train model.
 
@@ -52,6 +54,6 @@ Expected AppTest:
 ## 6. Trước khi bàn giao
 
 - Kiểm tra title, axis, unit, tooltip, caption và `N`.
-- Chụp ảnh 1440×1000 cho cả hai trang và các tương tác map/drill.
+- Chụp ảnh 1440×1000 cho cả bốn trang và các tương tác map/drill.
 - Chạy link check, `git diff --check` và kiểm tra hai file rubric không đổi.
 - Không commit/push khi chưa có duyệt của leader.

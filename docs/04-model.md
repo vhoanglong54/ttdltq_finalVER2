@@ -2,7 +2,7 @@
 
 **Trạng thái:** Model v4 đã có artifact và verification; dashboard sử dụng bản này cho RQ6 cho đến khi chủ dự án duyệt bản thay thế.
 
-**Trạng thái:** đã chạy và kiểm tra local trên dữ liệu OULAD mới nhất; chưa commit trong đợt tái cấu trúc này.
+**Trạng thái:** đã chạy, kiểm tra trên dữ liệu OULAD mới nhất và được đưa lên `ttdltq_finalVER2/main` tại mốc triển khai `1499c40`.
 
 **Thuật toán theo rubric:** Logistic Regression. `DummyClassifier` chỉ là baseline kỹ thuật, không phải mô hình chính thứ hai.
 
@@ -205,7 +205,7 @@ Các artifact tái tạo được nằm trong `data/processed/model/`; bundle Py
 | `model_verification.csv` | Chín điều kiện đối chiếu Accuracy, CI, Recall/F1, PR-AUC, Brier, baseline, presentation và checksum. |
 | `model_evaluation.txt` | Báo cáo chạy tự sinh cục bộ; không phải tài liệu dự án thứ hai. |
 
-Data source chính của phần Early Warning trên Trang 2 là `model_predictions.csv`, hạt một attempt eligible. Nếu liên kết với bảng phân tích phải dùng đủ ba khóa `(code_module, code_presentation, id_student)` và không join event raw. Trang đánh giá mặc định `dataset_split = test`.
+Nguồn dữ liệu chính của Trang 4 — Dự đoán nguy cơ là `model_predictions.csv`, hạt một lượt học đủ điều kiện. Nếu liên kết với bảng phân tích phải dùng đủ ba khóa `(code_module, code_presentation, id_student)` và không nối trực tiếp dữ liệu sự kiện thô. Trang đánh giá mặc định dùng tập kiểm tra (`dataset_split = test`).
 
 - KPI lấy từ `model_metrics.csv`: Accuracy, Precision, Recall, F1, ROC-AUC, PR-AUC.
 - Xác suất/danh sách rủi ro lấy từ `model_predictions.csv`.
@@ -253,7 +253,7 @@ Kết quả local hiện tại: `MODEL_OUTPUT_VALIDATION=PASS`; 9/9 verification
 - Đây là dự báo trên dữ liệu quan sát lịch sử, không phải quan hệ nhân quả hoặc chẩn đoán cá nhân.
 - Coverage assessment khác nhau giữa module/presentation; kết quả phụ thuộc cutoff.
 - Test split đã được xem ở các vòng cải tiến cutoff 98/105, vì vậy không được gọi đây là test hoàn toàn nguyên sơ. Cần holdout mới theo thời gian/presentation hoặc dữ liệu ngoài OULAD để xác nhận độc lập mạnh hơn.
-- Có code, output và metric local không tự động đồng nghĩa model đã nghiệm thu. Chỉ commit/push sau khi chủ dự án duyệt code, lệnh tái tạo, metric, leakage checklist, cutoff/threshold và contract dashboard Python.
+- Code, output và metric chỉ được coi là nghiệm thu khi đã qua duyệt cùng lệnh tái tạo, leakage checklist, cutoff/threshold và contract dashboard Python. Mốc `1499c40` đã qua cổng này; mọi thay đổi model về sau vẫn phải được chủ dự án duyệt trước khi commit/push.
 
 ## Related Work (Trích dẫn ban đầu)
 

@@ -1,8 +1,8 @@
-# TTDLTQ FINAL — Phân tích kết quả học tập với OULAD
+# Nghiên cứu và phân tích các yếu tố ảnh hưởng đến kết quả học tập của sinh viên đại học
 
-Đồ án cuối kỳ môn **Tương tác dữ liệu trực quan (IDV)** do một người thực hiện chính trên toàn bộ pipeline. Câu hỏi trung tâm: những yếu tố nào liên hệ với kết quả học tập và có thể nhận diện sớm lượt học có nguy cơ **Fail/Withdrawn** hay không? Bộ dữ liệu là **Open University Learning Analytics Dataset (OULAD)**; công nghệ đã chốt là **Python + Logistic Regression + Streamlit + Plotly**.
+Đồ án cuối kỳ môn **Tương tác dữ liệu trực quan (IDV)** do một người thực hiện chính. Câu hỏi trung tâm: **yếu tố học tập nào liên quan rõ nhất đến khả năng qua môn, trượt hoặc bỏ học?** Phần dự đoán dùng dữ liệu 105 ngày đầu để nhận diện sớm lượt học có nguy cơ kết thúc bằng **trượt hoặc bỏ học**; mô hình không dự đoán điểm chính xác. Bộ dữ liệu là **Open University Learning Analytics Dataset (OULAD)**; công nghệ đã chốt là **Python + Logistic Regression + Streamlit + Plotly**.
 
-Repo đã có pipeline dữ liệu/model, EDA tái tạo được, sáu insight và bản dashboard Streamlit local theo plan. QA trực quan thủ công, báo cáo/slide/video vẫn đang phát triển; chỉ ghi hoàn thành khi có hiện vật và bằng chứng kiểm tra tương ứng.
+Repo VER2 đã có pipeline dữ liệu/mô hình, phân tích tái tạo được, sáu insight và dashboard Streamlit bốn trang. Các kết luận trọng tâm hiện tại là: **hoàn thành bài đến hạn** liên quan rõ nhất đến kết quả; **mức tham gia học trực tuyến** là yếu tố cảnh báo quan trọng; hai yếu tố bất lợi xuất hiện cùng lúc làm nhóm nguy cơ nổi bật hơn; **lịch sử học lại** là bối cảnh cần chú ý. Học phần, khu vực và hoàn cảnh kinh tế–xã hội chỉ được dùng làm bối cảnh so sánh, không được gọi là nguyên nhân.
 
 ## Đọc theo thứ tự
 
@@ -49,8 +49,8 @@ Hai script đầu tái tạo bảng/hình EDA và geometry bản đồ đã audi
 
 - Dữ liệu có nguồn và giấy phép rõ, ít nhất **5.000 dòng** và **3 bảng** thực sự liên kết; có data dictionary, audit, cleaning, join và calculated fields.
 - EDA Python có ít nhất **3–5 biểu đồ tĩnh**; kiểm tra 8–10 giả thuyết khả thi và chốt **5–7 insight** có bằng chứng.
-- Dashboard Python gồm **2 trang**, triển khai 8 loại biểu đồ không phải map và 1 Geographic Map bắt buộc riêng; có map cross-filter, module drill-down, tooltip và Student Action List.
-- Logistic Regression dự báo `At_Risk`; trang Risk Matrix trình bày probability, TP/TN/FP/FN, KPI đối chiếu và nhóm High Risk cần ưu tiên hỗ trợ.
+- Dashboard Python gồm **4 trang**, có ít nhất 8 loại biểu đồ không phải bản đồ và 1 Geographic Map bắt buộc; bản đồ lọc chéo, học phần có drill-down, tooltip và danh sách ưu tiên hỗ trợ.
+- Logistic Regression dự đoán một lượt học có kết thúc bằng trượt/bỏ học hay không; Trang 4 trình bày xác suất, dự đoán đúng/sai, số trường hợp bỏ sót và nhóm cần ưu tiên hỗ trợ.
 - Báo cáo **tối thiểu 40 trang**, trích dẫn IEEE, demo trực tiếp, video backup; người thực hiện phải giải thích được toàn bộ pipeline.
 
 Nguồn dữ liệu chính: [Open University OULAD](https://research.stem.open.ac.uk/ouanalyse/dataset/); mô tả cấu trúc và phương pháp: [Kuzilek et al., Scientific Data (2017)](https://www.nature.com/articles/sdata2017171); bản phát hành và giấy phép: [UCI OULAD](https://archive.ics.uci.edu/dataset/349/open+university+learning+analytics+dataset).

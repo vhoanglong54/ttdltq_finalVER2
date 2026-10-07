@@ -1,6 +1,6 @@
 # Dữ liệu
 
-`raw/` giữ nguyên nguồn cục bộ và `interim/` là bảng tạm; CSV trong hai thư mục này bị `.gitignore`. `processed/` là đầu ra tái tạo được; `clean_dataset.csv`, bundle model cuối và bốn mart trong `processed/dashboard/` được chuẩn bị để repo mới có thể chạy dashboard sau khi clone. Hiện mọi thay đổi vẫn ở local, chờ duyệt trước khi commit.
+`raw/` giữ nguyên nguồn cục bộ và `interim/` là bảng tạm; CSV trong hai thư mục này bị `.gitignore`. `processed/` là đầu ra tái tạo được; `clean_dataset.csv`, bundle model cuối và bốn mart trong `processed/dashboard/` đã được đưa lên `ttdltq_finalVER2/main` tại mốc `1499c40` để dashboard có thể chạy sau khi clone.
 
 ## T01 — Xác minh nguồn OULAD
 

@@ -1,9 +1,13 @@
 # Dashboard Streamlit
 
-Dashboard cuối gồm hai trang:
+Dashboard gồm bốn trang theo đúng mạch phân tích:
 
-1. **Academic Insight & Behavior:** 4 KPI, Filled Map, 100% stacked bar có drill, VLE multi-line, submission scatter + trendline và activity treemap.
-2. **Risk Matrix & Early Warning:** 3 KPI model, education × IMD heatmap, previous-attempt box plot, probability gauge, TP/TN/FP/FN donut và High-Risk Action List.
+1. **Bức tranh kết quả học tập:** 4 KPI, Filled Map và 100% stacked bar có drill.
+2. **Các yếu tố học tập:** mức tham gia trực tuyến, hoàn thành bài, thời điểm nộp và tài nguyên được dùng.
+3. **Kết hợp nhiều yếu tố:** mức tham gia × điểm, học vấn × hoàn cảnh khu vực và lịch sử học lại.
+4. **Dự đoán nguy cơ:** 3 KPI, mức nguy cơ, dự đoán đúng/sai/bỏ sót và danh sách ưu tiên hỗ trợ.
+
+Mỗi trang có khối **Story** riêng, trả lời trực tiếp yếu tố nào liên quan đến kết quả. VLE, IMD, mã AAA–GGG, B/J và các chỉ số mô hình được giải thích bằng tiếng Việt ngay trong giao diện. Mô hình dự đoán khả năng trượt/bỏ học, không dự đoán điểm số.
 
 ## Chạy local
 
@@ -23,10 +27,10 @@ App cần:
 
 | File | Vai trò |
 |---|---|
-| `app.py` | Giao diện, state, filter, chart, story |
+| `app.py` | Giao diện bốn trang, state, filter, chart và Story |
 | `dashboard_data.py` | Loader, schema guard, filter và KPI |
-| `chart-inventory.md` | 8 loại chart thường + map |
-| `wireframe.md` | Bố cục hai trang |
+| `chart-inventory.md` | Inventory visual và mục đích phân tích |
+| `wireframe.md` | Bố cục bốn trang |
 | `qa-t09.md` | Baseline và cổng QA |
 | `assets/` | GeoJSON, mapping audit, nguồn/giấy phép |
 | `evidence/` | Automated QA và screenshot browser thật |

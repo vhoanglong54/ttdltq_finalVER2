@@ -1,8 +1,10 @@
 # 10 — Tổng kết triển khai và bàn giao toàn bộ dự án
 
+**Tên đề tài:** Nghiên cứu và phân tích các yếu tố ảnh hưởng đến kết quả học tập của sinh viên đại học
+
 **Cập nhật:** 07/10/2026
 
-**Trạng thái Git:** đã được leader duyệt để commit/push
+**Trạng thái Git:** bản hai trang đã push tại `1499c40`; bản bốn trang tăng cường Story/thuật ngữ đang ở local, chưa commit/push và chờ leader duyệt
 
 **Repo đích:** `https://github.com/vhoanglong54/ttdltq_finalVER2.git`
 
@@ -22,9 +24,9 @@ Tài liệu này là bản bàn giao tổng hợp. Giải thích chuyên sâu du
   → EDA + 10 giả thuyết + 6 insight dữ liệu
   → Logistic Regression cảnh báo sớm ngày 105
   → 4 data marts cho dashboard
-  → dashboard Streamlit hai trang
-  → 8 chart type + Geographic Map + action list
-  → automated QA + browser visual QA
+  → dashboard Streamlit bốn trang
+  → 11 visual + Geographic Map + action list
+  → automated QA + browser visual QA bốn trang
 ```
 
 Hiện vật local đã có:
@@ -33,8 +35,8 @@ Hiện vật local đã có:
 - `clean_dataset.csv`: 32.593 attempts, 35 cột, 0 duplicate attempt key.
 - EDA: 10 giả thuyết, 6 insight, 13 bảng bằng chứng và 6 hình tĩnh.
 - Logistic Regression v4: leakage guard, group split, tuning, threshold, bootstrap CI và verification.
-- Dashboard hai trang theo đặc tả mới, có map cross-filter, module drill-down và High-Risk Action List.
-- 17 unit tests, AppTest và kiểm tra bằng Microsoft Edge.
+- Dashboard bốn trang theo mạch Kết quả → Yếu tố học tập → Kết hợp yếu tố → Dự đoán; có bản đồ lọc chéo, học phần drill-down và danh sách ưu tiên hỗ trợ.
+- 17 unit tests, AppTest bốn trang và browser QA Microsoft Edge đã PASS.
 
 ## 2. Dữ liệu
 
@@ -84,6 +86,16 @@ Chi tiết cột/grain/missingness: [09-data-dictionary.md](09-data-dictionary.m
 
 ## 3. EDA và insight dữ liệu
 
+### 3.0 Kết luận dễ hiểu theo đúng trọng tâm đề tài
+
+1. **Tiến độ hoàn thành bài liên quan rõ nhất đến kết quả:** nhóm chưa hoàn thành bài đã đến hạn có nguy cơ trượt/bỏ học 96,6%; nhóm hoàn thành đủ là 24,8%.
+2. **Mức tham gia học trực tuyến cũng liên quan mạnh:** nhóm 25% ít tương tác nhất có nguy cơ 64,4%; nhóm 25% tương tác nhiều nhất là 18,7%.
+3. **Khi hai yếu tố bất lợi cùng xuất hiện, nguy cơ nổi bật hơn:** ít tương tác + điểm bài tập thấp có nguy cơ 73,3%; cao ở cả hai chỉ 8,3%.
+4. **Lịch sử học lại là dấu hiệu cần chú ý:** nhóm từng học học phần trước có nguy cơ 56,1%; nhóm học lần đầu là 36,3%.
+5. Học phần, vùng cư trú, học vấn đầu vào và hoàn cảnh kinh tế–xã hội có chênh lệch quan sát được nhưng chỉ là **bối cảnh**; dữ liệu không đủ để khẳng định chúng gây ra kết quả.
+
+Vì vậy, trọng tâm hỗ trợ nên là sinh viên **chưa hoàn thành bài đến hạn và ít tham gia hệ thống học trực tuyến**, thay vì chỉ dựa vào nơi ở hay đặc điểm nhân khẩu học.
+
 ### 3.1 Hiện vật
 
 - Script: `src/eda_analysis.py`.
@@ -109,11 +121,11 @@ Chi tiết cột/grain/missingness: [09-data-dictionary.md](09-data-dictionary.m
 ### 3.3 Sáu insight cố định
 
 1. Rủi ro khác mạnh giữa module–presentation.
-2. VLE thấp đi cùng At-Risk cao hơn.
-3. Tiến độ assessment là tín hiệu phân tách mạnh.
-4. Kết hợp VLE và assessment cho risk profile rõ hơn.
-5. Lịch sử học lại là context cần chú ý.
-6. At-Risk có khác biệt theo region.
+2. Mức tham gia học trực tuyến thấp đi cùng nguy cơ không đạt cao hơn.
+3. Tiến độ hoàn thành bài là yếu tố phân biệt rõ nhất.
+4. Kết hợp mức tham gia và điểm bài tập cho thấy nhóm nguy cơ rõ hơn.
+5. Lịch sử học lại là bối cảnh cần chú ý.
+6. Nguy cơ không đạt có khác biệt theo vùng nhưng không chứng minh nơi ở là nguyên nhân.
 
 Số liệu, `N`, nguồn tái tạo và giới hạn nằm tại [insight-log.md](insight-log.md). Model là phần riêng, không dùng thay insight dữ liệu.
 
@@ -121,7 +133,7 @@ Số liệu, `N`, nguồn tái tạo và giới hạn nằm tại [insight-log.m
 
 ### 4.1 Mục tiêu
 
-Tại ngày 105, model ước lượng xác suất một learning attempt kết thúc bằng `Fail/Withdrawn`. Đây là phân loại nhị phân, không dự báo điểm.
+Tại ngày 105, mô hình ước lượng khả năng một lượt học kết thúc bằng trượt hoặc bỏ học. Đây là bài toán phân loại hai nhóm, **không dự đoán điểm số chính xác**.
 
 ### 4.2 Phương pháp
 
@@ -176,44 +188,40 @@ Dải này không thay thế classification threshold 41,5%.
 
 Lý do: app không được đọc/join `studentVle.csv` 259 MB trong mỗi request. Hai VLE marts đều bảo toàn tổng 39.605.099 clicks. Submission mart có 170.874 bài hợp lệ và `submission_delay = date_submitted - due_date`.
 
-## 6. Dashboard cuối — hai trang
+## 6. Dashboard cuối — bốn trang
 
-Rubric được giữ nguyên. Bốn phần logic trước đây được gom thành hai trang vật lý để story ngắn và dễ demo hơn.
+Rubric được giữ nguyên. Bốn phần được tách thành bốn trang để insight không bị chìm trong quá nhiều visual.
 
-### 6.1 Trang 1 — Academic Insight & Behavior
+### 6.1 Trang 1 — Bức tranh kết quả học tập
 
-**Slicers:** module, presentation, gender.
-**KPI:** Total Students, Avg Score, Pass Rate, At-Risk Rate.
+- 4 KPI, Story về kết quả chung, Geographic Map và 100% Stacked Bar.
+- AAA–GGG được ghi rõ là mã học phần ẩn danh; B/J là tháng 2/tháng 10.
+- Bar sắp theo tỷ lệ nguy cơ không đạt, có nhãn trượt + bỏ học và drill học phần → đợt mở.
 
-1. Filled Geographic Map theo At-Risk rate; click region cross-filter KPI và chart 2–5.
-2. 100% Stacked Bar cơ cấu result; click module drill xuống presentation.
-3. Multi-Line VLE At-Risk vs Not-At-Risk, rolling mean 7 ngày và deadline markers.
-4. Scatter delay–score, bubble size previous attempts, trendline và Pearson r.
-5. Treemap tổng clicks theo activity type.
+### 6.2 Trang 2 — Các yếu tố học tập
 
-Card story cuối trang có ba insight động: result context, chênh VLE, delay–score và tài nguyên dẫn đầu.
+- Story nói rõ hoàn thành bài và mức tham gia học trực tuyến là hai yếu tố liên quan nổi bật.
+- Multi-Line mức tham gia, Completion Bar, Scatter thời điểm nộp–điểm và Treemap tài nguyên.
 
-### 6.2 Trang 2 — Risk Matrix & Early Warning
+### 6.3 Trang 3 — Kết hợp nhiều yếu tố
 
-**Slicers:** Risk Level, IMD.
-**KPI:** Accuracy context, Recall context, High Risk Count.
+- Heatmap mức tham gia × điểm, Heatmap học vấn × hoàn cảnh khu vực và Box Plot lịch sử học lại.
+- Story so sánh hai nhóm đối lập, nêu lịch sử học lại và giới hạn không nhân quả.
 
-6. Heatmap `highest_education × imd_band`, màu At-Risk rate, mỗi ô có `N`.
-7. Box Plot score ngày 105 theo previous attempts `0/1/2/3+`.
-8. Gauge mean risk probability với ba dải và threshold marker.
-9. Donut TP/TN/FP/FN.
-10. Student Action List: top 100 High Risk, probability, data bar đỏ và nút một-click lọc toàn Trang 2 về High.
+### 6.4 Trang 4 — Dự đoán nguy cơ
 
-Card story cuối trang có ba insight động: top education–IMD cell với `N≥30`, score median theo previous attempts, và hiệu quả/cảnh báo model.
+- 3 KPI mô hình, Gauge, Donut đúng/sai/bỏ sót và danh sách ưu tiên hỗ trợ.
+- Story nói rõ dự đoán trượt/bỏ học, diễn giải độ chính xác theo “trong 100 lượt học” và đưa ra bước hỗ trợ.
 
-### 6.3 Inventory và UI
+### 6.5 Inventory và UI
 
-- 8 loại chart không phải map: stacked bar, multi-line, scatter, treemap, heatmap, box, gauge, donut.
+- 11 visual, bao phủ ít nhất 8 loại chart không phải map.
 - 1 Geographic Map riêng.
 - Màu semantic: xanh an toàn, cam cảnh báo, đỏ At-Risk/High.
 - Title, axis, unit, caption, hover và `N` được ghi trực tiếp.
 - Scatter lấy mẫu 4.500 điểm để render nhưng thống kê dùng toàn subset.
-- Insight chỉ ba câu/trang; không còn Sunburst hoặc hierarchy dày đặc.
+- Mỗi trang có 2–3 câu Story; không còn Sunburst hoặc hierarchy dày đặc.
+- VLE, IMD, mã học phần ẩn danh và các chỉ số mô hình đều được giải thích bằng tiếng Việt tại chỗ.
 
 ## 7. Geographic Map
 
@@ -229,7 +237,8 @@ Card story cuối trang có ba insight động: top education–IMD cell với `
 - Slicer module → presentation cascade và gender.
 - Map click → region state → rerun → cập nhật KPI/chart; nút reset xóa state/selection.
 - Module click → presentation drill; breadcrumb và nút quay lại.
-- Risk Level/IMD filter cập nhật KPI, 4 chart và action list.
+- Filter học phần–đợt mở–giới tính dùng chung Trang 1–3.
+- Risk Level/IMD cập nhật KPI, 2 chart và action list trên Trang 4.
 - Tooltip có metric, context và `N`.
 - Empty state có thông báo, không tạo số giả.
 
@@ -239,19 +248,19 @@ Card story cuối trang có ba insight động: top education–IMD cell với `
 
 - Compile app, data layer, mart builder, EDA, map builder và model: PASS.
 - `python -m unittest discover -s tests -v`: **17/17 PASS**.
-- AppTest Page 1: 5 chart, 4 metric, 0 exception.
-- AppTest Page 2: 4 chart, 3 metric, 1 table, 0 exception.
-- AppTest High only: 4 chart, 0 exception, High count 810.
+- AppTest Trang 1: 2 chart, 4 metric, 0 exception.
+- AppTest Trang 2: 4 chart, 0 exception.
+- AppTest Trang 3: 3 chart, 0 exception.
+- AppTest Trang 4: 2 chart, 3 metric, 1 table, 0 exception.
 - Markdown links: 0 missing.
 - `git diff --check`: PASS.
 
 ### 9.2 Browser
 
-- Microsoft Edge, viewport 1440×1000.
-- Map render 13 paths; click tạo active cross-filter.
-- Stacked bar click tạo drill module → presentation.
-- Timeline, scatter, treemap, heatmap, box, gauge, donut và action list đều render.
-- Bằng chứng: [visual QA](../dashboard/evidence/visual-qa-2026-10-07.md).
+- Microsoft Edge headless, viewport 1440×1000: bốn trang, 11 chart và 4 Story render không exception.
+- Không có tràn ngang: `scrollWidth = clientWidth = 1140` ở cả bốn trang.
+- Map 13 vùng, cross-filter, outcome drill và nút High Risk đều hoạt động.
+- Bằng chứng: [Visual QA bốn trang](../dashboard/evidence/visual-qa-4page-2026-10-07.md).
 
 ### 9.3 Bảo vệ rubric
 
@@ -337,6 +346,6 @@ tests/
 - Slide, kịch bản demo và video backup.
 - Link deploy cuối.
 - Luyện giải thích grain, cleaning, insight, cutoff, threshold, metric, FN/FP và giới hạn model.
-- Commit/push chỉ được thực hiện sau khi leader duyệt.
+- Bản triển khai đã được commit/push tại mốc `1499c40`; mọi thay đổi tiếp theo vẫn chỉ được commit/push sau khi leader duyệt.
 
 Thông điệp sử dụng cuối: model dùng để **ưu tiên hỗ trợ sớm**, không tự động quyết định hay xử phạt người học.

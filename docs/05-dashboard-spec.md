@@ -1,113 +1,104 @@
-# 05 — Đặc tả dashboard Python hai trang
+# 05 — Đặc tả dashboard Python bốn trang
 
-## 1. Kiến trúc
+**Đề tài:** Nghiên cứu và phân tích các yếu tố ảnh hưởng đến kết quả học tập của sinh viên đại học
+
+## 1. Mục tiêu và mạch Story
+
+Dashboard trả lời tuần tự bốn câu hỏi:
+
+1. **Bức tranh kết quả học tập:** sinh viên đang đạt kết quả thế nào và khác biệt xuất hiện ở đâu?
+2. **Các yếu tố học tập:** mức tham gia học trực tuyến, tiến độ làm bài và thời điểm nộp bài liên quan thế nào đến kết quả?
+3. **Kết hợp nhiều yếu tố:** khi mức tham gia và điểm bài tập cùng thấp, nguy cơ thay đổi ra sao?
+4. **Dự đoán nguy cơ:** mô hình dự đoán trượt/bỏ học tốt đến đâu và ai cần được ưu tiên hỗ trợ?
+
+Insight dữ liệu nằm ở ba trang đầu. Logistic Regression là phần riêng ở Trang 4; metric model không thay thế insight phân tích.
+
+## 2. Kiến trúc
 
 ```text
 7 bảng OULAD đã clean
   ├─ clean_dataset.csv ───────────────► KPI, outcome, map
-  ├─ dashboard marts ─────────────────► VLE timeline, submission scatter, activity treemap
-  └─ feature_snapshot + predictions ──► risk matrix, gauge, model performance, action list
+  ├─ dashboard marts ─────────────────► VLE, submission, activity
+  └─ feature_snapshot + predictions ──► interaction, model, action list
                                            │
                                            ▼
-                                Streamlit + Plotly (2 trang)
+                                Streamlit + Plotly (4 trang)
 ```
 
 - Entry point: `dashboard/app.py`.
 - Loader/schema/KPI: `dashboard/dashboard_data.py`.
 - Data mart builder: `src/dashboard_features.py`.
-- Map: `dashboard/assets/oulad_regions.geojson` và mapping audit.
-- App chỉ đọc artifact; không join raw event và không train model khi render.
+- App chỉ đọc artifact; không train model hoặc join bảng VLE nhiều triệu dòng khi render.
 
-## 2. Contract chung
+## 3. Thuật ngữ bắt buộc hiển thị
 
-| Khái niệm | Định nghĩa |
+| Thuật ngữ | Giải thích trên dashboard |
 |---|---|
-| Learning attempt | `(code_module, code_presentation, id_student)` |
-| At-Risk | `Fail` hoặc `Withdrawn` |
-| Not-At-Risk | `Pass` hoặc `Distinction` |
-| Pass Rate | `(Pass + Distinction) / attempts` |
-| Total Students | `nunique(id_student)` trong filter context |
-| Avg Score | `sum(valid assessment scores) / count(valid scores)` |
-| Model scope | `dataset_split=test`, cutoff ngày 105 |
-| Risk Level | Low `<0,4`; Medium `0,4–<0,7`; High `≥0,7` |
+| OULAD | Open University Learning Analytics Dataset |
+| VLE | Hệ thống học trực tuyến; số lượt tương tác không phải giờ học hay điểm danh |
+| AAA–GGG | Mã học phần đã được ẩn danh; không phải tên môn thật |
+| B/J | Đợt mở lớp bắt đầu tháng 2/tháng 10 |
+| Có nguy cơ không đạt | Kết quả cuối là trượt hoặc bỏ học |
+| Bài đánh giá | Bài kiểm tra hoặc bài tập được chấm điểm |
+| Ngày 105 | Chỉ dùng thông tin có sẵn đến ngày 105 cho dự đoán sớm |
+| IMD | Nhóm mức khó khăn kinh tế–xã hội của khu vực cư trú |
+| Tỷ lệ phát hiện | Trong 100 lượt thực sự có nguy cơ, mô hình tìm được bao nhiêu lượt |
+| Bỏ sót | Lượt thực sự có nguy cơ nhưng mô hình không cảnh báo |
 
-Risk Level là dải ưu tiên can thiệp. Threshold phân lớp chính thức của Logistic Regression là `0,415` và không bị thay đổi trong dashboard.
+## 4. Trang 1 — Bức tranh kết quả học tập
 
-## 3. Trang 1 — Academic Insight & Behavior
+- Filter: học phần ẩn danh, đợt mở lớp và giới tính.
+- KPI: tổng sinh viên, điểm trung bình, tỷ lệ qua môn, tỷ lệ có nguy cơ không đạt.
+- **Story đầu trang:** nói rõ cứ 100 lượt học có bao nhiêu lượt trượt/bỏ học; học phần và vùng chỉ là bối cảnh có chênh lệch.
+- **Filled Map:** 13 vùng, màu theo tỷ lệ có nguy cơ không đạt; click vùng lọc KPI và biểu đồ kết quả.
+- **100% Stacked Bar:** bốn kết quả; nhãn cuối thanh gộp trượt + bỏ học; click học phần để xem từng đợt mở.
+- Mỗi thanh bắt buộc hiển thị đủ miền 0–100%; caption giải thích AAA–GGG và B/J.
 
-### Slicers
+## 5. Trang 2 — Các yếu tố học tập
 
-`code_module → code_presentation` là cascade; `gender` độc lập. `region` không nằm trong slicer vì được điều khiển bằng map cross-filter.
+- Dùng cùng filter học phần–đợt mở–giới tính.
+- **Story đầu trang:** nêu ngay hoàn thành bài là yếu tố liên quan rõ nhất, sau đó đến mức tham gia học trực tuyến.
+- **Multi-Line:** mức tương tác trực tuyến trung bình của nhóm có nguy cơ và nhóm không nguy cơ; đánh dấu hạn nộp quan trọng.
+- **Completion Bar:** tỷ lệ có nguy cơ không đạt theo bốn mức hoàn thành bài đến hạn.
+- **Scatter + Trendline:** số ngày nộp sớm/trễ và điểm; kích thước điểm theo số lần từng học học phần.
+- **Treemap:** tỷ trọng sử dụng theo loại tài nguyên học trực tuyến.
 
-### KPI
+VLE click chỉ là dấu vết tương tác nền tảng, không được gọi là attendance, thời gian học hoặc chất lượng học.
 
-1. Total Students.
-2. Avg Score.
-3. Pass Rate.
-4. At-Risk Rate.
+## 6. Trang 3 — Kết hợp nhiều yếu tố
 
-### Visual
+- Dùng dữ liệu có đến ngày 105 và cùng bộ lọc học phần–đợt mở–giới tính.
+- **Mức tham gia × Điểm Heatmap:** bốn nhóm mức tương tác × bốn nhóm điểm; từng ô có tỷ lệ và N.
+- **Education × IMD Heatmap:** học vấn trước đó × nhóm IMD; từng ô có rate và N.
+- **Box Plot:** điểm assessment có trọng số theo số lần học trước `0,1,2,3+`.
+- **Story đầu trang:** so sánh nhóm thấp ở cả mức tham gia và điểm với nhóm cao ở cả hai; nêu chênh lệch nguy cơ giữa nhóm từng học lại và nhóm học lần đầu.
 
-1. **Filled Map:** aggregate attempt theo `region`; color=`At_Risk.mean`; tooltip rate/count/N. Map luôn hiển thị tất cả region trong slicer context để người dùng có thể đổi vùng. Region được chọn chỉ lọc KPI và visual 2–5.
-2. **100% Stacked Bar:** mặc định `code_module × final_result`; click module lưu state và đổi grain sang `code_presentation × final_result` của module đó. Nút quay lại xóa drill state.
-3. **Multi-Line VLE:** tổng click theo ngày chia tổng attempts của từng nhãn At-Risk, gồm cả ngày không click; dùng rolling mean 7 ngày. Tối đa ba deadline có tổng trọng số lớn nhất được đánh dấu bằng vạch chấm.
-4. **Scatter:** một điểm là một assessment submission hợp lệ; `x=submission_delay`, `y=score`, size tăng theo previous attempts, color theo At-Risk. Render sample cố định tối đa 4.500 điểm; Pearson r và trendline dùng toàn bộ subset.
-5. **Treemap:** `activity_type`, area/color theo tổng `sum_click`.
+Trang này chỉ mô tả tương tác quan sát; không gán nguyên nhân hoặc định kiến cá nhân từ education, IMD hay region.
 
-### Insight/story
+## 7. Trang 4 — Dự đoán nguy cơ
 
-Card cuối trang chỉ có ba câu định lượng, cập nhật theo filter. Mỗi câu nêu phát hiện và giới hạn cần thiết; không nhồi giả thuyết/kỹ thuật vào chart.
+- Filter: mức nguy cơ dự đoán và nhóm hoàn cảnh kinh tế–xã hội của khu vực.
+- KPI: tỷ lệ dự đoán đúng, tỷ lệ phát hiện nhóm nguy cơ, số lượt cần ưu tiên hỗ trợ.
+- Caption diễn giải kết quả toàn tập kiểm tra: mô hình đúng khoảng 83/100 lượt và phát hiện khoảng 74/100 lượt thực sự có nguy cơ.
+- **Gauge:** nguy cơ không đạt trung bình; thấp `<40%`, trung bình `40–<70%`, cao `≥70%`; vạch `41,5%` là ngưỡng phân lớp.
+- **Donut:** dự đoán đúng nhóm nguy cơ, đúng nhóm không nguy cơ, cảnh báo nhầm và bỏ sót.
+- **Danh sách hỗ trợ:** chỉ nhóm nguy cơ cao, xếp xác suất giảm dần, tối đa 100 dòng.
+- **Story đầu trang:** nói rõ mô hình dự đoán khả năng trượt/bỏ học, không dự đoán điểm; chuyển kết quả thành bước ưu tiên hỗ trợ.
 
-## 4. Trang 2 — Risk Matrix & Early Warning
+Danh sách chỉ ưu tiên hỗ trợ; không tự động quyết định kết quả hoặc xử phạt người học.
 
-### Slicers
+## 8. Inventory biểu đồ
 
-- Risk Level: High, Medium, Low.
-- `imd_band`, có nhóm `Không xác định` riêng.
+Có 11 visual và đủ ít nhất **8 loại biểu đồ không phải map**: 100% stacked bar, multi-line, bar, scatter, treemap, heatmap, box plot, gauge và donut. Geographic Map là cổng bắt buộc độc lập.
 
-### KPI
+## 9. Tương tác và cổng chất lượng
 
-- Accuracy trong context.
-- Recall At-Risk trong context.
-- Số High Risk trong context.
-
-Caption luôn công bố metric toàn test để người xem không nhầm subgroup metric với kết quả model chính thức.
-
-### Visual và table
-
-6. **Heatmap:** `highest_education × imd_band`; `z=actual_at_risk.mean`; mỗi ô có phần trăm và `N`. Story chỉ chọn ô `N≥30` khi tìm tổ hợp cao nhất.
-7. **Box Plot:** `assessment_weighted_score_cutoff` theo previous attempts; `3+` gộp 3–6 để tránh nhóm quá nhỏ.
-8. **Gauge:** trung bình `risk_probability`; green `<40%`, yellow `40–<70%`, red `≥70%`; marker 41,5% là threshold model.
-9. **Donut:** bốn error type TP/TN/FP/FN. Caption giải nghĩa và nêu số tuyệt đối.
-10. **Action List:** chỉ High Risk, sort giảm dần probability, tối đa 100 dòng; có thanh đỏ 10 nấc. Nút `Chỉ xem High Risk` cập nhật Risk Level slicer và lọc toàn Trang 2 bằng một click.
-
-## 5. Storytelling và insight
-
-Dashboard có sáu insight động, ba ở mỗi trang. Insight EDA cố định và bằng chứng tái tạo vẫn được lưu tại `insight-log.md`; model là phần riêng, không thay thế insight phân tích dữ liệu.
-
-Story flow:
-
-```text
-Kết quả + không gian
-  → hành vi VLE + kỷ luật nộp bài + loại tài nguyên
-  → tổ hợp education × IMD + lịch sử học lại
-  → xác suất dự báo + đúng/sai
-  → danh sách ưu tiên hỗ trợ
-```
-
-## 6. Map và tương tác
-
-- GeoJSON có 13 feature khớp 13/13 nhãn OULAD.
-- Nguồn ONS, giấy phép OGL v3.0; `Ireland` dùng Northern Ireland làm proxy và được công bố.
-- Plotly selection trả `location`; app lưu region trong `st.session_state`, rerun và cập nhật toàn trang.
-- Reset map tăng key version để xóa selection cũ.
-- Module drill cũng dùng selection state riêng và breadcrumb.
-
-## 7. Cổng chất lượng
-
-- `python src/dashboard_features.py` tạo đủ bốn mart.
-- Tổng click của `vle_daily_profile` và `vle_activity_summary` đều bằng `39.605.099`.
-- AppTest: Page 1 = 5 chart/4 metric; Page 2 = 4 chart/3 metric/1 table; 0 exception.
-- Browser QA: map 13 path, cross-filter xuất hiện sau click, drill module xuất hiện sau click.
-- Filter High render 4 chart, Accuracy context 92,3%, Recall context 100%, High count 810; đây không phải metric toàn test.
-- Rubric gốc và DOCX nguồn không thay đổi.
+- Map render 13/13 vùng, click tạo cross-filter và có reset.
+- Outcome bar drill học phần → đợt mở; breadcrumb và nút quay lại hoạt động.
+- Filter học phần → đợt mở là cascade và dùng chung cho Trang 1–3.
+- Risk Level/IMD cập nhật KPI, gauge, donut và Action List.
+- AppTest: Trang 1 = 2 chart/4 metric; Trang 2 = 4 chart; Trang 3 = 3 chart; Trang 4 = 2 chart/3 metric/1 table; tất cả 0 exception.
+- Model verification, 17 unit test, `git diff --check` phải PASS.
+- Browser QA và ảnh mới phải được tạo lại sau thay đổi bố cục bốn trang.
+- Không sửa `02-rubric-traceability.md` và `source/TTDLTQ_script.docx`.
+- Không commit/push trước khi leader duyệt.

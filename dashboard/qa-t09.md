@@ -21,9 +21,10 @@
 - [x] Unit tests: 17/17 PASS.
 - [x] Hai VLE marts đều bảo toàn 39.605.099 clicks.
 - [x] Submission delay bằng `date_submitted - due_date`.
-- [x] Page 1 AppTest: 5 charts, 4 metrics, 0 exception.
-- [x] Page 2 AppTest: 4 charts, 3 metrics, 1 table, 0 exception.
-- [x] Page 2 với `Risk Level=High`: 4 charts, 0 exception, N=810.
+- [x] Trang 1 AppTest: 2 charts, 4 metrics, 0 exception.
+- [x] Trang 2 AppTest: 4 charts, 0 exception.
+- [x] Trang 3 AppTest: 3 charts, 0 exception.
+- [x] Trang 4 AppTest: 2 charts, 3 metrics, 1 table, 0 exception.
 - [x] Model verification: 9/9 quality gates PASS.
 - [x] GeoJSON: 13/13 region, geometry valid.
 - [x] Markdown links: 0 link tương đối thiếu.
@@ -31,19 +32,16 @@
 
 ## Browser QA
 
-- [x] Microsoft Edge, viewport 1440×1000.
-- [x] Filled Map render đủ 13 polygon.
-- [x] Click map tạo dòng `Cross-filter từ bản đồ` và cập nhật context.
-- [x] Click stacked bar tạo breadcrumb Module → Presentation.
-- [x] VLE line không chồng annotation deadline.
-- [x] Scatter có trendline, mốc đúng hạn và tooltip.
-- [x] Gauge hiện đủ 0–100% và ba dải màu.
-- [x] Action List có probability và data bar đỏ.
+- [x] Chụp lại bốn trang ở viewport 1440×1000.
+- [x] Filled Map render đủ 13 polygon và cross-filter hoạt động.
+- [x] Stacked bar hiển thị đủ 0–100%, giải thích AAA–GGG/B/J và drill hoạt động.
+- [x] VLE/assessment/interaction visual không bị tràn ngang hoặc chồng nhãn nghiêm trọng.
+- [x] Gauge, donut và Action List hiển thị đúng trên Trang 4.
 
-Chi tiết ảnh: [Visual QA](evidence/visual-qa-2026-10-07.md). Kết quả lệnh: [Automated QA](evidence/automated-qa-2026-10-06.md).
+Chi tiết: [Visual QA bốn trang](evidence/visual-qa-4page-2026-10-07.md). Bản [Visual QA cũ](evidence/visual-qa-2026-10-07.md) chỉ dùng lưu trữ mốc `1499c40`.
 
 ## Điều kiện chưa tự động hoàn thành
 
 - Leader vẫn cần chạy lại trên máy demo và duyệt bằng mắt.
 - Báo cáo, slide, video và link demo là hiện vật riêng.
-- Chưa commit/push cho đến khi leader xác nhận.
+- Bản hai trang đã push tại `1499c40`. Bản bốn trang đang local, chưa commit/push và phải được leader duyệt sau browser QA.

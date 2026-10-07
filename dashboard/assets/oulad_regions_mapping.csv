@@ -1,0 +1,219 @@
+ons_code,ons_name,oulad_region,mapping_rationale
+E06000031,Peterborough,East Anglian Region,Historic OU area description mapped to current ONS CUA
+E06000032,Luton,East Anglian Region,Historic OU area description mapped to current ONS CUA
+E06000033,Southend-on-Sea,East Anglian Region,Historic OU area description mapped to current ONS CUA
+E06000034,Thurrock,East Anglian Region,Historic OU area description mapped to current ONS CUA
+E06000055,Bedford,East Anglian Region,Historic OU area description mapped to current ONS CUA
+E06000056,Central Bedfordshire,East Anglian Region,Historic OU area description mapped to current ONS CUA
+E10000003,Cambridgeshire,East Anglian Region,Historic OU area description mapped to current ONS CUA
+E10000012,Essex,East Anglian Region,Historic OU area description mapped to current ONS CUA
+E10000015,Hertfordshire,East Anglian Region,Historic OU area description mapped to current ONS CUA
+E10000020,Norfolk,East Anglian Region,Historic OU area description mapped to current ONS CUA
+E10000029,Suffolk,East Anglian Region,Historic OU area description mapped to current ONS CUA
+E06000012,North East Lincolnshire,East Midlands Region,Historic OU area description mapped to current ONS CUA
+E06000013,North Lincolnshire,East Midlands Region,Historic OU area description mapped to current ONS CUA
+E06000015,Derby,East Midlands Region,Historic OU area description mapped to current ONS CUA
+E06000016,Leicester,East Midlands Region,Historic OU area description mapped to current ONS CUA
+E06000017,Rutland,East Midlands Region,Historic OU area description mapped to current ONS CUA
+E06000018,Nottingham,East Midlands Region,Historic OU area description mapped to current ONS CUA
+E06000061,North Northamptonshire,East Midlands Region,Historic OU area description mapped to current ONS CUA
+E06000062,West Northamptonshire,East Midlands Region,Historic OU area description mapped to current ONS CUA
+E10000007,Derbyshire,East Midlands Region,Historic OU area description mapped to current ONS CUA
+E10000018,Leicestershire,East Midlands Region,Historic OU area description mapped to current ONS CUA
+E10000019,Lincolnshire,East Midlands Region,Historic OU area description mapped to current ONS CUA
+E10000024,Nottinghamshire,East Midlands Region,Historic OU area description mapped to current ONS CUA
+N09000001,Antrim and Newtownabbey,Ireland,Northern Ireland proxy for historic OU Ireland label
+N09000002,"Armagh City, Banbridge and Craigavon",Ireland,Northern Ireland proxy for historic OU Ireland label
+N09000003,Belfast,Ireland,Northern Ireland proxy for historic OU Ireland label
+N09000004,Causeway Coast and Glens,Ireland,Northern Ireland proxy for historic OU Ireland label
+N09000005,Derry City and Strabane,Ireland,Northern Ireland proxy for historic OU Ireland label
+N09000006,Fermanagh and Omagh,Ireland,Northern Ireland proxy for historic OU Ireland label
+N09000007,Lisburn and Castlereagh,Ireland,Northern Ireland proxy for historic OU Ireland label
+N09000008,Mid and East Antrim,Ireland,Northern Ireland proxy for historic OU Ireland label
+N09000009,Mid Ulster,Ireland,Northern Ireland proxy for historic OU Ireland label
+N09000010,"Newry, Mourne and Down",Ireland,Northern Ireland proxy for historic OU Ireland label
+N09000011,Ards and North Down,Ireland,Northern Ireland proxy for historic OU Ireland label
+E09000001,City of London,London Region,All London boroughs and City of London
+E09000002,Barking and Dagenham,London Region,All London boroughs and City of London
+E09000003,Barnet,London Region,All London boroughs and City of London
+E09000004,Bexley,London Region,All London boroughs and City of London
+E09000005,Brent,London Region,All London boroughs and City of London
+E09000006,Bromley,London Region,All London boroughs and City of London
+E09000007,Camden,London Region,All London boroughs and City of London
+E09000008,Croydon,London Region,All London boroughs and City of London
+E09000009,Ealing,London Region,All London boroughs and City of London
+E09000010,Enfield,London Region,All London boroughs and City of London
+E09000011,Greenwich,London Region,All London boroughs and City of London
+E09000012,Hackney,London Region,All London boroughs and City of London
+E09000013,Hammersmith and Fulham,London Region,All London boroughs and City of London
+E09000014,Haringey,London Region,All London boroughs and City of London
+E09000015,Harrow,London Region,All London boroughs and City of London
+E09000016,Havering,London Region,All London boroughs and City of London
+E09000017,Hillingdon,London Region,All London boroughs and City of London
+E09000018,Hounslow,London Region,All London boroughs and City of London
+E09000019,Islington,London Region,All London boroughs and City of London
+E09000020,Kensington and Chelsea,London Region,All London boroughs and City of London
+E09000021,Kingston upon Thames,London Region,All London boroughs and City of London
+E09000022,Lambeth,London Region,All London boroughs and City of London
+E09000023,Lewisham,London Region,All London boroughs and City of London
+E09000024,Merton,London Region,All London boroughs and City of London
+E09000025,Newham,London Region,All London boroughs and City of London
+E09000026,Redbridge,London Region,All London boroughs and City of London
+E09000027,Richmond upon Thames,London Region,All London boroughs and City of London
+E09000028,Southwark,London Region,All London boroughs and City of London
+E09000029,Sutton,London Region,All London boroughs and City of London
+E09000030,Tower Hamlets,London Region,All London boroughs and City of London
+E09000031,Waltham Forest,London Region,All London boroughs and City of London
+E09000032,Wandsworth,London Region,All London boroughs and City of London
+E09000033,Westminster,London Region,All London boroughs and City of London
+E06000001,Hartlepool,North Region,Historic OU area description mapped to current ONS CUA
+E06000002,Middlesbrough,North Region,Historic OU area description mapped to current ONS CUA
+E06000003,Redcar and Cleveland,North Region,Historic OU area description mapped to current ONS CUA
+E06000004,Stockton-on-Tees,North Region,Historic OU area description mapped to current ONS CUA
+E06000005,Darlington,North Region,Historic OU area description mapped to current ONS CUA
+E06000047,County Durham,North Region,Historic OU area description mapped to current ONS CUA
+E06000057,Northumberland,North Region,Historic OU area description mapped to current ONS CUA
+E06000063,Cumberland,North Region,Historic OU area description mapped to current ONS CUA
+E06000064,Westmorland and Furness,North Region,Historic OU area description mapped to current ONS CUA
+E08000021,Newcastle upon Tyne,North Region,Historic OU area description mapped to current ONS CUA
+E08000022,North Tyneside,North Region,Historic OU area description mapped to current ONS CUA
+E08000023,South Tyneside,North Region,Historic OU area description mapped to current ONS CUA
+E08000024,Sunderland,North Region,Historic OU area description mapped to current ONS CUA
+E08000037,Gateshead,North Region,Historic OU area description mapped to current ONS CUA
+E06000006,Halton,North Western Region,Historic OU area description mapped to current ONS CUA
+E06000007,Warrington,North Western Region,Historic OU area description mapped to current ONS CUA
+E06000008,Blackburn with Darwen,North Western Region,Historic OU area description mapped to current ONS CUA
+E06000009,Blackpool,North Western Region,Historic OU area description mapped to current ONS CUA
+E06000049,Cheshire East,North Western Region,Historic OU area description mapped to current ONS CUA
+E06000050,Cheshire West and Chester,North Western Region,Historic OU area description mapped to current ONS CUA
+E08000001,Bolton,North Western Region,Historic OU area description mapped to current ONS CUA
+E08000002,Bury,North Western Region,Historic OU area description mapped to current ONS CUA
+E08000003,Manchester,North Western Region,Historic OU area description mapped to current ONS CUA
+E08000004,Oldham,North Western Region,Historic OU area description mapped to current ONS CUA
+E08000005,Rochdale,North Western Region,Historic OU area description mapped to current ONS CUA
+E08000006,Salford,North Western Region,Historic OU area description mapped to current ONS CUA
+E08000007,Stockport,North Western Region,Historic OU area description mapped to current ONS CUA
+E08000008,Tameside,North Western Region,Historic OU area description mapped to current ONS CUA
+E08000009,Trafford,North Western Region,Historic OU area description mapped to current ONS CUA
+E08000010,Wigan,North Western Region,Historic OU area description mapped to current ONS CUA
+E08000011,Knowsley,North Western Region,Historic OU area description mapped to current ONS CUA
+E08000012,Liverpool,North Western Region,Historic OU area description mapped to current ONS CUA
+E08000013,St. Helens,North Western Region,Historic OU area description mapped to current ONS CUA
+E08000014,Sefton,North Western Region,Historic OU area description mapped to current ONS CUA
+E08000015,Wirral,North Western Region,Historic OU area description mapped to current ONS CUA
+E10000017,Lancashire,North Western Region,Historic OU area description mapped to current ONS CUA
+S12000005,Clackmannanshire,Scotland,All current Scottish council areas
+S12000006,Dumfries and Galloway,Scotland,All current Scottish council areas
+S12000008,East Ayrshire,Scotland,All current Scottish council areas
+S12000010,East Lothian,Scotland,All current Scottish council areas
+S12000011,East Renfrewshire,Scotland,All current Scottish council areas
+S12000013,Na h-Eileanan Siar,Scotland,All current Scottish council areas
+S12000014,Falkirk,Scotland,All current Scottish council areas
+S12000017,Highland,Scotland,All current Scottish council areas
+S12000018,Inverclyde,Scotland,All current Scottish council areas
+S12000019,Midlothian,Scotland,All current Scottish council areas
+S12000020,Moray,Scotland,All current Scottish council areas
+S12000021,North Ayrshire,Scotland,All current Scottish council areas
+S12000023,Orkney Islands,Scotland,All current Scottish council areas
+S12000026,Scottish Borders,Scotland,All current Scottish council areas
+S12000027,Shetland Islands,Scotland,All current Scottish council areas
+S12000028,South Ayrshire,Scotland,All current Scottish council areas
+S12000029,South Lanarkshire,Scotland,All current Scottish council areas
+S12000030,Stirling,Scotland,All current Scottish council areas
+S12000033,Aberdeen City,Scotland,All current Scottish council areas
+S12000034,Aberdeenshire,Scotland,All current Scottish council areas
+S12000035,Argyll and Bute,Scotland,All current Scottish council areas
+S12000036,City of Edinburgh,Scotland,All current Scottish council areas
+S12000038,Renfrewshire,Scotland,All current Scottish council areas
+S12000039,West Dunbartonshire,Scotland,All current Scottish council areas
+S12000040,West Lothian,Scotland,All current Scottish council areas
+S12000041,Angus,Scotland,All current Scottish council areas
+S12000042,Dundee City,Scotland,All current Scottish council areas
+S12000045,East Dunbartonshire,Scotland,All current Scottish council areas
+S12000047,Fife,Scotland,All current Scottish council areas
+S12000048,Perth and Kinross,Scotland,All current Scottish council areas
+S12000049,Glasgow City,Scotland,All current Scottish council areas
+S12000050,North Lanarkshire,Scotland,All current Scottish council areas
+E06000035,Medway,South East Region,Historic OU area description mapped to current ONS CUA
+E06000043,Brighton and Hove,South East Region,Historic OU area description mapped to current ONS CUA
+E10000011,East Sussex,South East Region,Historic OU area description mapped to current ONS CUA
+E10000016,Kent,South East Region,Historic OU area description mapped to current ONS CUA
+E10000030,Surrey,South East Region,Historic OU area description mapped to current ONS CUA
+E10000032,West Sussex,South East Region,Historic OU area description mapped to current ONS CUA
+E06000030,Swindon,South Region,Historic OU area description mapped to current ONS CUA
+E06000036,Bracknell Forest,South Region,Historic OU area description mapped to current ONS CUA
+E06000037,West Berkshire,South Region,Historic OU area description mapped to current ONS CUA
+E06000038,Reading,South Region,Historic OU area description mapped to current ONS CUA
+E06000039,Slough,South Region,Historic OU area description mapped to current ONS CUA
+E06000040,Windsor and Maidenhead,South Region,Historic OU area description mapped to current ONS CUA
+E06000041,Wokingham,South Region,Historic OU area description mapped to current ONS CUA
+E06000042,Milton Keynes,South Region,Historic OU area description mapped to current ONS CUA
+E06000044,Portsmouth,South Region,Historic OU area description mapped to current ONS CUA
+E06000045,Southampton,South Region,Historic OU area description mapped to current ONS CUA
+E06000046,Isle of Wight,South Region,Historic OU area description mapped to current ONS CUA
+E06000058,"Bournemouth, Christchurch and Poole",South Region,Historic OU area description mapped to current ONS CUA
+E06000059,Dorset,South Region,Historic OU area description mapped to current ONS CUA
+E06000060,Buckinghamshire,South Region,Historic OU area description mapped to current ONS CUA
+E10000014,Hampshire,South Region,Historic OU area description mapped to current ONS CUA
+E10000025,Oxfordshire,South Region,Historic OU area description mapped to current ONS CUA
+E06000022,Bath and North East Somerset,South West Region,Historic OU area description mapped to current ONS CUA
+E06000023,"Bristol, City of",South West Region,Historic OU area description mapped to current ONS CUA
+E06000024,North Somerset,South West Region,Historic OU area description mapped to current ONS CUA
+E06000025,South Gloucestershire,South West Region,Historic OU area description mapped to current ONS CUA
+E06000026,Plymouth,South West Region,Historic OU area description mapped to current ONS CUA
+E06000027,Torbay,South West Region,Historic OU area description mapped to current ONS CUA
+E06000052,Cornwall,South West Region,Historic OU area description mapped to current ONS CUA
+E06000053,Isles of Scilly,South West Region,Historic OU area description mapped to current ONS CUA
+E06000054,Wiltshire,South West Region,Historic OU area description mapped to current ONS CUA
+E06000066,Somerset,South West Region,Historic OU area description mapped to current ONS CUA
+E10000008,Devon,South West Region,Historic OU area description mapped to current ONS CUA
+E10000013,Gloucestershire,South West Region,Historic OU area description mapped to current ONS CUA
+W06000001,Isle of Anglesey,Wales,All current Welsh principal areas
+W06000002,Gwynedd,Wales,All current Welsh principal areas
+W06000003,Conwy,Wales,All current Welsh principal areas
+W06000004,Denbighshire,Wales,All current Welsh principal areas
+W06000005,Flintshire,Wales,All current Welsh principal areas
+W06000006,Wrexham,Wales,All current Welsh principal areas
+W06000008,Ceredigion,Wales,All current Welsh principal areas
+W06000009,Pembrokeshire,Wales,All current Welsh principal areas
+W06000010,Carmarthenshire,Wales,All current Welsh principal areas
+W06000011,Swansea,Wales,All current Welsh principal areas
+W06000012,Neath Port Talbot,Wales,All current Welsh principal areas
+W06000013,Bridgend,Wales,All current Welsh principal areas
+W06000014,Vale of Glamorgan,Wales,All current Welsh principal areas
+W06000015,Cardiff,Wales,All current Welsh principal areas
+W06000016,Rhondda Cynon Taf,Wales,All current Welsh principal areas
+W06000018,Caerphilly,Wales,All current Welsh principal areas
+W06000019,Blaenau Gwent,Wales,All current Welsh principal areas
+W06000020,Torfaen,Wales,All current Welsh principal areas
+W06000021,Monmouthshire,Wales,All current Welsh principal areas
+W06000022,Newport,Wales,All current Welsh principal areas
+W06000023,Powys,Wales,All current Welsh principal areas
+W06000024,Merthyr Tydfil,Wales,All current Welsh principal areas
+E06000019,"Herefordshire, County of",West Midlands Region,Historic OU area description mapped to current ONS CUA
+E06000020,Telford and Wrekin,West Midlands Region,Historic OU area description mapped to current ONS CUA
+E06000021,Stoke-on-Trent,West Midlands Region,Historic OU area description mapped to current ONS CUA
+E06000051,Shropshire,West Midlands Region,Historic OU area description mapped to current ONS CUA
+E08000025,Birmingham,West Midlands Region,Historic OU area description mapped to current ONS CUA
+E08000026,Coventry,West Midlands Region,Historic OU area description mapped to current ONS CUA
+E08000027,Dudley,West Midlands Region,Historic OU area description mapped to current ONS CUA
+E08000028,Sandwell,West Midlands Region,Historic OU area description mapped to current ONS CUA
+E08000029,Solihull,West Midlands Region,Historic OU area description mapped to current ONS CUA
+E08000030,Walsall,West Midlands Region,Historic OU area description mapped to current ONS CUA
+E08000031,Wolverhampton,West Midlands Region,Historic OU area description mapped to current ONS CUA
+E10000028,Staffordshire,West Midlands Region,Historic OU area description mapped to current ONS CUA
+E10000031,Warwickshire,West Midlands Region,Historic OU area description mapped to current ONS CUA
+E10000034,Worcestershire,West Midlands Region,Historic OU area description mapped to current ONS CUA
+E06000010,"Kingston upon Hull, City of",Yorkshire Region,Historic OU area description mapped to current ONS CUA
+E06000011,East Riding of Yorkshire,Yorkshire Region,Historic OU area description mapped to current ONS CUA
+E06000014,York,Yorkshire Region,Historic OU area description mapped to current ONS CUA
+E06000065,North Yorkshire,Yorkshire Region,Historic OU area description mapped to current ONS CUA
+E08000017,Doncaster,Yorkshire Region,Historic OU area description mapped to current ONS CUA
+E08000018,Rotherham,Yorkshire Region,Historic OU area description mapped to current ONS CUA
+E08000032,Bradford,Yorkshire Region,Historic OU area description mapped to current ONS CUA
+E08000033,Calderdale,Yorkshire Region,Historic OU area description mapped to current ONS CUA
+E08000034,Kirklees,Yorkshire Region,Historic OU area description mapped to current ONS CUA
+E08000035,Leeds,Yorkshire Region,Historic OU area description mapped to current ONS CUA
+E08000036,Wakefield,Yorkshire Region,Historic OU area description mapped to current ONS CUA
+E08000038,Barnsley,Yorkshire Region,Historic OU area description mapped to current ONS CUA
+E08000039,Sheffield,Yorkshire Region,Historic OU area description mapped to current ONS CUA

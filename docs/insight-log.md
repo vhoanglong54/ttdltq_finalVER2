@@ -2,16 +2,29 @@
 
 Đây là nơi nghiệm thu duy nhất cho insight **phân tích dữ liệu**. Sáu insight dưới đây được tạo từ EDA, tách khỏi đánh giá Logistic Regression ở RQ6. Mọi kết luận chỉ mô tả liên hệ/khác biệt trên OULAD, không khẳng định quan hệ nhân quả.
 
+## Bản ngắn dùng trên dashboard
+
+| ID | Phát hiện và bằng chứng | Ý nghĩa |
+|---|---|---|
+| INS-01 | Rủi ro khác mạnh giữa các khóa: `CCC-2014B` 65,8%, `AAA-2013J` 27,4%; chênh 38,3 điểm %. | Đánh giá theo từng module–presentation, không dùng một mức chung. |
+| INS-02 | Nhóm VLE thấp nhất có At-Risk 64,4%, nhóm cao nhất 18,7%; chênh 45,7 điểm %. | VLE là tín hiệu cảnh báo sớm, không phải giờ học hay điểm danh. |
+| INS-03 | Chưa hoàn thành assessment có At-Risk 96,6%, hoàn thành 100% là 24,8%. | Theo dõi tiến độ nộp bài và xét lịch assessment của từng khóa. |
+| INS-04 | VLE thấp + assessment thấp có At-Risk 73,3%; cả hai cao chỉ 8,3%. | Đọc hai tín hiệu cùng nhau, không kết luận từ một biến đơn lẻ. |
+| INS-05 | Đã từng học module có At-Risk 56,1%, chưa từng học là 36,3%. | Previous attempts là context để ưu tiên xem xét, không phải nhãn cá nhân. |
+| INS-06 | North Western 59,8%, Ireland 45,1%; chênh mô tả 14,7 điểm %. | Dùng map để tìm vùng cần xem thêm, không suy ra nguyên nhân từ nơi ở. |
+
+Dashboard chỉ hiển thị ba phần trong bảng này. Tử số/mẫu số, scope và limitation đầy đủ vẫn được lưu bên dưới để phục vụ báo cáo và kiểm chứng.
+
 ## Bảng nghiệm thu
 
 | ID | RQ/H | Thông điệp một câu | Bằng chứng | N và tử số/mẫu số | Giới hạn | Vị trí story | Đạt |
 |---|---|---|---|---|---|---|:---:|
-| INS-01 | RQ1 / H01 | `CCC-2014B` có At-Risk rate 65,8%, cao hơn `AAA-2013J` 27,4% đúng 38,3 điểm %. | `01_outcome_by_module_presentation.png`; `module_presentation_risk.csv` | 1.273/1.936 so với 105/383; toàn khóa N=32.593 | Khác cấu trúc module, assessment và cohort; không phải tác động của module. | Overview | [x] |
-| INS-02 | RQ2 / H02–H04 | Nhóm 25% VLE clicks thấp nhất đến ngày 105 có At-Risk 64,4%, cao hơn nhóm 25% cao nhất 18,7% đúng 45,7 điểm %. | `02_vle_weekly_trend.png`; `03_early_vle_boxplot.png`; `engagement_quartiles.csv` | 4.047/6.283 so với 1.173/6.283; snapshot N=25.132 | Click là tương tác nền tảng, không đo chất lượng hay thời gian học. | Factor Analysis | [x] |
-| INS-03 | RQ3 / H05–H06 | Nhóm chưa hoàn thành assessment nào trước cutoff có At-Risk 96,6%, cao hơn nhóm hoàn thành 100% là 24,8% đúng 71,9 điểm %. | `04_assessment_completion_risk.png`; `assessment_completion.csv`; `assessment_score_quartiles.csv` | 1.620/1.677 so với 4.695/18.969; snapshot N=25.132 | Lịch assessment khác theo module; completion tại cutoff không phải nguyên nhân duy nhất. | Factor Analysis | [x] |
-| INS-04 | RQ5 / H09 | Hồ sơ đồng thời VLE thấp và điểm assessment thấp có At-Risk 73,3%; hồ sơ cả hai cao là 8,3%, chênh 65,1 điểm %. | `05_engagement_assessment_heatmap.png`; `engagement_assessment_matrix.csv` | 1.232/1.680 so với 197/2.385; snapshot N=25.132 | Chỉ gồm attempt có điểm trước cutoff; quartile là nhóm mô tả, không phải ngưỡng can thiệp. | Factor → Risk | [x] |
-| INS-05 | RQ4 / H07 | Attempt có ít nhất một lần học module trước có At-Risk 56,1%, cao hơn nhóm chưa học trước 36,3% đúng 19,7 điểm %. | `previous_attempts.csv`; treemap dashboard | 1.760/3.140 so với 7.987/21.992; snapshot N=25.132 | Không có kết quả chi tiết của lần học trước; còn khác biệt module/cohort chưa kiểm soát. | Risk Analysis | [x] |
-| INS-06 | RQ4 / H08 | North Western Region có At-Risk 59,8%, Ireland 45,1%, tạo khoảng chênh mô tả 14,7 điểm %. | `06_region_at_risk_rate.png`; `region_risk.csv`; Geographic Map + mapping audit | 1.738/2.906 so với 534/1.184; toàn khóa N=32.593 | Region lịch sử của OU; map là xấp xỉ công bố từ ONS; không suy ra nguyên nhân cá nhân. | Risk Analysis | [x] |
+| INS-01 | RQ1 / H01 | `CCC-2014B` có At-Risk rate 65,8%, cao hơn `AAA-2013J` 27,4% đúng 38,3 điểm %. | `01_outcome_by_module_presentation.png`; `module_presentation_risk.csv` | 1.273/1.936 so với 105/383; toàn khóa N=32.593 | Khác cấu trúc module, assessment và cohort; không phải tác động của module. | Academic · outcome drill | [x] |
+| INS-02 | RQ2 / H02–H04 | Nhóm 25% VLE clicks thấp nhất đến ngày 105 có At-Risk 64,4%, cao hơn nhóm 25% cao nhất 18,7% đúng 45,7 điểm %. | `02_vle_weekly_trend.png`; `03_early_vle_boxplot.png`; `engagement_quartiles.csv` | 4.047/6.283 so với 1.173/6.283; snapshot N=25.132 | Click là tương tác nền tảng, không đo chất lượng hay thời gian học. | Academic · VLE line | [x] |
+| INS-03 | RQ3 / H05–H06 | Nhóm chưa hoàn thành assessment nào trước cutoff có At-Risk 96,6%, cao hơn nhóm hoàn thành 100% là 24,8% đúng 71,9 điểm %. | `04_assessment_completion_risk.png`; `assessment_completion.csv`; `assessment_score_quartiles.csv` | 1.620/1.677 so với 4.695/18.969; snapshot N=25.132 | Lịch assessment khác theo module; completion tại cutoff không phải nguyên nhân duy nhất. | Academic · submission | [x] |
+| INS-04 | RQ5 / H09 | Hồ sơ đồng thời VLE thấp và điểm assessment thấp có At-Risk 73,3%; hồ sơ cả hai cao là 8,3%, chênh 65,1 điểm %. | `05_engagement_assessment_heatmap.png`; `engagement_assessment_matrix.csv` | 1.232/1.680 so với 197/2.385; snapshot N=25.132 | Chỉ gồm attempt có điểm trước cutoff; quartile là nhóm mô tả, không phải ngưỡng can thiệp. | Risk · context đa biến | [x] |
+| INS-05 | RQ4 / H07 | Attempt có ít nhất một lần học module trước có At-Risk 56,1%, cao hơn nhóm chưa học trước 36,3% đúng 19,7 điểm %. | `previous_attempts.csv`; box plot dashboard | 1.760/3.140 so với 7.987/21.992; snapshot N=25.132 | Không có kết quả chi tiết của lần học trước; còn khác biệt module/cohort chưa kiểm soát. | Risk · previous attempts | [x] |
+| INS-06 | RQ4 / H08 | North Western Region có At-Risk 59,8%, Ireland 45,1%, tạo khoảng chênh mô tả 14,7 điểm %. | `06_region_at_risk_rate.png`; `region_risk.csv`; Geographic Map + mapping audit | 1.738/2.906 so với 534/1.184; toàn khóa N=32.593 | Region lịch sử của OU; map là xấp xỉ công bố từ ONS; không suy ra nguyên nhân cá nhân. | Academic · map | [x] |
 
 ## Chi tiết và “so what?”
 
@@ -50,7 +63,7 @@
 ### INS-05 — Lịch sử học lại là context quan trọng
 
 - **Phạm vi:** snapshot ngày 105; `num_of_prev_attempts = 0` so với `>= 1`.
-- **Tái tạo:** `previous_attempts.csv` và treemap Risk Analysis.
+- **Tái tạo:** `previous_attempts.csv` và box plot previous attempts trên Trang 2.
 - **Kết quả giả thuyết:** H07 được ủng hộ ở mức mô tả.
 - **Diễn giải:** nhóm từng học module trước có tỷ lệ At-Risk cao hơn, nhưng dữ liệu không cho biết đầy đủ nguyên nhân hoặc kết quả từng lần trước.
 - **So what:** đây là context để ưu tiên xem xét, không phải nhãn đánh giá cá nhân.

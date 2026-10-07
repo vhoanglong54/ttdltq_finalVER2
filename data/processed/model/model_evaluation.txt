@@ -104,7 +104,7 @@ Hệ số phản ánh liên hệ trong mô hình sau preprocessing, không chứ
 | `module_FFF_x_vle_active_days_last_28_days` | -0.2688 | 0.7643 | lower_risk |
 | `module_presentation_FFF_2013J` | -0.2687 | 0.7644 | lower_risk |
 
-## Output cho Tableau
+## Output cho dashboard Python
 
 `model_predictions.csv` có một dòng cho mỗi lượt học eligible, gồm actual/predicted, xác suất, risk band, split, error type, cutoff, threshold và model version. Dashboard đánh giá phải mặc định `dataset_split = test`.
 

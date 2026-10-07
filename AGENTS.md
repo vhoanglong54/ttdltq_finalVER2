@@ -11,5 +11,5 @@
 - Hạt dữ liệu là **một lượt học theo `(code_module, code_presentation, id_student)`**; không đồng nhất số lượt học với số sinh viên duy nhất.
 - Insight là mối liên hệ trong dữ liệu quan sát; không viết quan hệ nhân quả nếu chưa có thiết kế chứng minh. Mỗi insight phải có RQ/H liên quan, số liệu, mẫu số, filter context, cỡ mẫu, giới hạn và đề xuất hành động.
 - Dashboard chỉ đọc bảng đã aggregate/output model đã kiểm tra. KPI phải có công thức và baseline Python để đối chiếu. Map cần geometry/mapping có nguồn, không tự chế tọa độ hoặc polygon.
-- Inventory đã khóa sau EDA: 9 loại biểu đồ không phải map và một Geographic Map bắt buộc riêng. Không đổi chart chỉ để đủ số lượng; mọi thay đổi phải giữ liên kết RQ/insight và filter, drill-down, tooltip, cross-filtering.
+- Inventory sau review: 8 loại biểu đồ không phải map và một Geographic Map bắt buộc riêng. Không đổi chart chỉ để đủ số lượng; mọi thay đổi phải giữ liên kết RQ/insight và filter, drill-down, tooltip, cross-filtering.
 - Chỉ đánh dấu checklist hoàn thành khi có đường dẫn hiện vật, bằng chứng kiểm tra và chủ dự án xác nhận. Không sửa file rubric.

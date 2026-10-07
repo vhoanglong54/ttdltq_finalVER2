@@ -31,7 +31,7 @@ Project do **một người thực hiện chính** trên toàn bộ chuỗi dữ
 - `At_Risk = 1` cho `Fail/Withdrawn`, `0` cho `Pass/Distinction`.
 - Không dùng target hoặc thông tin sau cutoff làm feature dự báo sớm.
 - App Streamlit chỉ đọc bảng đã aggregate và output model đã kiểm tra; không train model khi render.
-- Kế hoạch an toàn là **9 loại biểu đồ không gian thường + 1 Geographic Map bắt buộc riêng**. Map không được dùng để bù vào số lượng tối thiểu của nhóm biểu đồ thường.
+- Inventory sau review là **8 loại biểu đồ không phải map + 1 Geographic Map bắt buộc riêng**, đúng mức tối thiểu rubric. Map không được dùng để bù vào nhóm biểu đồ thường.
 - Geographic Map phải dùng geometry có nguồn/giấy phép, mapping đủ 13 region, tooltip và kiểm tra tổng `N`.
 - Filter nhiều cấp, drill-down, tooltip và cross-filtering phải có bằng chứng hoạt động.
 

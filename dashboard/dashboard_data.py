@@ -16,6 +16,7 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 ANALYSIS_PATH = PROJECT_ROOT / "data" / "processed" / "clean_dataset.csv"
 MODEL_DIR = PROJECT_ROOT / "data" / "processed" / "model"
+DASHBOARD_DIR = PROJECT_ROOT / "data" / "processed" / "dashboard"
 SNAPSHOT_PATH = MODEL_DIR / "feature_snapshot.csv"
 EDA_DIR = PROJECT_ROOT / "reports" / "eda"
 REGION_GEOJSON_PATH = PROJECT_ROOT / "dashboard" / "assets" / "oulad_regions.geojson"
@@ -140,11 +141,20 @@ def load_eda_table(filename: str, required_columns: set[str] | None = None) -> p
     return _read_required_csv(EDA_DIR / filename, required_columns or set())
 
 
+def load_dashboard_mart(
+    filename: str, required_columns: set[str] | None = None
+) -> pd.DataFrame:
+    """Load a compact chart-specific mart built by ``dashboard_features.py``."""
+
+    return _read_required_csv(DASHBOARD_DIR / filename, required_columns or set())
+
+
 def filter_attempts(
     frame: pd.DataFrame,
     modules: list[str] | None = None,
     presentations: list[str] | None = None,
     regions: list[str] | None = None,
+    genders: list[str] | None = None,
 ) -> pd.DataFrame:
     """Apply the shared dashboard filters without changing the input frame."""
 
@@ -155,6 +165,8 @@ def filter_attempts(
         mask &= frame["code_presentation"].isin(presentations)
     if regions:
         mask &= frame["region"].isin(regions)
+    if genders:
+        mask &= frame["gender"].isin(genders)
     return frame.loc[mask].copy()
 
 

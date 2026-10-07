@@ -1,6 +1,6 @@
 # Dữ liệu
 
-`raw/` giữ nguyên nguồn cục bộ và `interim/` là bảng tạm; CSV trong hai thư mục này bị `.gitignore`. `processed/` là đầu ra có thể tái tạo; riêng `processed/clean_dataset.csv` được theo dõi để làm nguồn dùng chung. Output model trong `processed/model/` giữ local cho đến khi được duyệt để commit.
+`raw/` giữ nguyên nguồn cục bộ và `interim/` là bảng tạm; CSV trong hai thư mục này bị `.gitignore`. `processed/` là đầu ra tái tạo được; `clean_dataset.csv`, bundle model cuối và bốn mart trong `processed/dashboard/` được chuẩn bị để repo mới có thể chạy dashboard sau khi clone. Hiện mọi thay đổi vẫn ở local, chờ duyệt trước khi commit.
 
 ## T01 — Xác minh nguồn OULAD
 

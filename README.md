@@ -49,8 +49,8 @@ Hai script đầu tái tạo bảng/hình EDA và geometry bản đồ đã audi
 
 - Dữ liệu có nguồn và giấy phép rõ, ít nhất **5.000 dòng** và **3 bảng** thực sự liên kết; có data dictionary, audit, cleaning, join và calculated fields.
 - EDA Python có ít nhất **3–5 biểu đồ tĩnh**; kiểm tra 8–10 giả thuyết khả thi và chốt **5–7 insight** có bằng chứng.
-- Dashboard Python triển khai **9 loại biểu đồ không phải map** và **1 Geographic Map bắt buộc riêng**, cùng filter nhiều cấp, drill-down, tooltip hover và cross-filtering.
-- Logistic Regression dự báo `At_Risk`; dashboard trình bày xác suất, phân lớp, Actual vs Predicted và chỉ số đánh giá có thể đối chiếu.
+- Dashboard Python gồm **2 trang**, triển khai 8 loại biểu đồ không phải map và 1 Geographic Map bắt buộc riêng; có map cross-filter, module drill-down, tooltip và Student Action List.
+- Logistic Regression dự báo `At_Risk`; trang Risk Matrix trình bày probability, TP/TN/FP/FN, KPI đối chiếu và nhóm High Risk cần ưu tiên hỗ trợ.
 - Báo cáo **tối thiểu 40 trang**, trích dẫn IEEE, demo trực tiếp, video backup; người thực hiện phải giải thích được toàn bộ pipeline.
 
 Nguồn dữ liệu chính: [Open University OULAD](https://research.stem.open.ac.uk/ouanalyse/dataset/); mô tả cấu trúc và phương pháp: [Kuzilek et al., Scientific Data (2017)](https://www.nature.com/articles/sdata2017171); bản phát hành và giấy phép: [UCI OULAD](https://archive.ics.uci.edu/dataset/349/open+university+learning+analytics+dataset).

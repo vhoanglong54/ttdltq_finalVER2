@@ -10,7 +10,7 @@ Một người thực hiện chính chịu trách nhiệm hiểu và trình bày
 | Data & Method | 7 bảng OULAD, nguồn, khóa/hạt, audit, cleaning, calculated fields và giới hạn |
 | EDA & Insights | Sáu chart tĩnh, H01–H10, tương tác đa biến, sáu insight và story |
 | Prediction | Target/cutoff, leakage guard, split, Logistic Regression, metric/CI, lỗi và giới hạn |
-| Interactive Dashboard | Streamlit + Plotly, 9 loại chart thường, Geographic Map riêng, tương tác và QA |
+| Interactive Dashboard | Streamlit + Plotly, 8 loại chart thường, Geographic Map riêng, tương tác và QA |
 | Conclusion | Trả lời RQ, khuyến nghị thận trọng, hạn chế và hướng tiếp theo |
 | Installation & Demo | Cách tái tạo data/model, chạy app, kịch bản demo và video backup |
 
@@ -19,12 +19,12 @@ Báo cáo phải đạt **ít nhất 40 trang** và dùng trích dẫn IEEE. Sơ
 ## Kịch bản storytelling khi demo
 
 1. Nêu câu hỏi trung tâm, hạt lượt học và giới hạn dữ liệu quan sát.
-2. Overview trả lời điều gì đang xảy ra.
-3. Drill-down từ module xuống presentation.
-4. Factor Analysis giải thích VLE, assessment và tương tác đa yếu tố.
-5. Risk Analysis xác định risk profile và Geographic Map theo vùng, luôn kèm `N`.
-6. Prediction trình bày xác suất, threshold, Actual vs Predicted, metric/CI và sai số.
-7. Kết luận 5–7 insight, gợi ý hành động và giới hạn.
+2. Trang Academic Insight & Behavior trả lời kết quả, không gian, VLE, độ trễ nộp bài và loại tài nguyên.
+3. Demo map cross-filter và drill từ module xuống presentation.
+4. Trang Risk Matrix & Early Warning trình bày interaction education × IMD, lịch sử học lại, xác suất và sai số.
+5. Student Action List chuyển output model thành danh sách High Risk để ưu tiên hỗ trợ.
+6. Phân biệt threshold model 41,5% với dải can thiệp Low/Medium/High 40%/70%.
+7. Kết luận sáu insight động, hành động thận trọng và giới hạn.
 
 ## Nội dung phải tự giải thích được
 
@@ -39,7 +39,7 @@ Báo cáo phải đạt **ít nhất 40 trang** và dùng trích dẫn IEEE. Sơ
 ## Bằng chứng nộp
 
 - PDF báo cáo, slide, link/code demo và video backup.
-- Inventory 9 chart thường và Geographic Map được kiểm tra riêng.
+- Inventory 8 chart thường và Geographic Map được kiểm tra riêng.
 - Insight Log 5–7 mục.
 - Model verification và dashboard QA.
 - Lệnh tái tạo, requirements, checksum input và ảnh/video interaction.

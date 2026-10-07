@@ -12,7 +12,11 @@ from shapely.geometry import shape
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "dashboard"))
 
-from dashboard_data import compute_kpis, filter_attempts  # noqa: E402
+from dashboard_data import (  # noqa: E402
+    compute_kpis,
+    filter_attempts,
+    load_dashboard_mart,
+)
 
 
 class DashboardCalculationTests(unittest.TestCase):
@@ -23,6 +27,7 @@ class DashboardCalculationTests(unittest.TestCase):
                 "code_presentation": ["2014J", "2014B", "2014J"],
                 "id_student": [1, 1, 2],
                 "region": ["R1", "R2", "R1"],
+                "gender": ["F", "M", "F"],
                 "At_Risk": [0, 1, 1],
                 "assessment_scored_count": [2, 1, 0],
                 "assessment_score_sum_all_time": [160.0, 50.0, 0.0],
@@ -45,10 +50,49 @@ class DashboardCalculationTests(unittest.TestCase):
             modules=["AAA"],
             presentations=["2014J"],
             regions=["R1"],
+            genders=["F"],
         )
         self.assertEqual(len(filtered), 1)
         self.assertEqual(int(filtered.iloc[0]["id_student"]), 1)
         self.assertEqual(len(self.frame), 3)
+
+
+class DashboardMartTests(unittest.TestCase):
+    def test_vle_marts_preserve_all_clean_clicks(self) -> None:
+        required = {
+            "code_module",
+            "code_presentation",
+            "gender",
+            "region",
+            "sum_click",
+        }
+        daily = load_dashboard_mart(
+            "vle_daily_profile.csv.gz", required | {"At_Risk", "date"}
+        )
+        activity = load_dashboard_mart(
+            "vle_activity_summary.csv.gz", required | {"activity_type"}
+        )
+        expected = int(
+            pd.read_csv(
+                ROOT / "data" / "processed" / "clean_dataset.csv",
+                usecols=["vle_total_clicks_all_time"],
+            )["vle_total_clicks_all_time"].sum()
+        )
+        self.assertEqual(int(daily["sum_click"].sum()), expected)
+        self.assertEqual(int(activity["sum_click"].sum()), expected)
+
+    def test_submission_delay_is_derived_from_due_date(self) -> None:
+        submissions = load_dashboard_mart(
+            "assessment_submissions.csv.gz",
+            {"date_submitted", "due_date", "submission_delay", "score"},
+        )
+        expected = submissions["date_submitted"] - submissions["due_date"]
+        pd.testing.assert_series_equal(
+            submissions["submission_delay"].astype(float),
+            expected.astype(float),
+            check_names=False,
+        )
+        self.assertTrue(submissions["score"].between(0, 100).all())
 
 
 class EvidenceContractTests(unittest.TestCase):

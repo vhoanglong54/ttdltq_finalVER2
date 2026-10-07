@@ -1,305 +1,122 @@
-# PLAN APPROVED — Phương án thực hiện đồ án
+# PLAN_APPROVED — Phương án triển khai cuối đã duyệt
 
-**Trạng thái:** Đã được chủ dự án duyệt ngày 06/10/2026.  
-**Phạm vi:** Một người thực hiện chính toàn bộ data, EDA, insight, model, dashboard, báo cáo và demo.  
-**Quy tắc Git:** Tài liệu này được lưu local; chỉ commit/push khi chủ dự án cho phép rõ ràng.  
-**Nguồn yêu cầu được bảo vệ:** Không chỉnh sửa `docs/02-rubric-traceability.md` hoặc PHẦN II của DOCX nguồn.
+**Cập nhật:** 07/10/2026
 
-## 1. Mục tiêu
+**Người thực hiện chính:** Leader dự án
 
-Phân tích các yếu tố có **liên hệ** với kết quả học tập trên OULAD và xây dựng mô hình nhận diện sớm một lượt học có nguy cơ:
+**Công nghệ:** Python, Pandas, scikit-learn, Streamlit và Plotly
 
-- `At_Risk = 1`: `Fail` hoặc `Withdrawn`.
-- `At_Risk = 0`: `Pass` hoặc `Distinction`.
+**Nguyên tắc Git:** chỉ commit/push sau khi leader xem và cho phép
+**Nguồn rubric được bảo vệ:** không chỉnh sửa `02-rubric-traceability.md` và `source/TTDLTQ_script.docx`.
 
-Luồng project:
+## 1. Mục tiêu nghiên cứu
 
-> OULAD → audit → cleaning → aggregate/join → EDA → kiểm tra giả thuyết → insight → storytelling → Logistic Regression → trực quan dự báo → dashboard Python → báo cáo/demo.
+Phân tích các yếu tố học tập, hành vi VLE và bối cảnh người học có liên hệ với kết quả học tập; sau đó dùng Logistic Regression tại ngày 105 để cảnh báo sớm một learning attempt có khả năng kết thúc bằng `Fail` hoặc `Withdrawn`.
 
-OULAD là dữ liệu quan sát. Kết luận chỉ dùng từ **liên hệ, khác biệt, xu hướng**, không khẳng định quan hệ nhân quả.
+Đây là dữ liệu quan sát. Kết luận dùng từ **liên hệ**, **khác biệt**, **xu hướng**; không tuyên bố quan hệ nhân quả.
 
-## 2. Công nghệ
+## 2. Câu hỏi phân tích
 
-- Xử lý dữ liệu: Python, Pandas, NumPy.
-- EDA tĩnh: Matplotlib, Seaborn.
-- Model: scikit-learn Logistic Regression.
-- Dashboard: Streamlit + Plotly.
-- Geographic Map: GeoJSON có nguồn và giấy phép.
-- Môi trường: `requirements.txt`.
+1. Kết quả và At-Risk phân bố thế nào theo module, presentation và region?
+2. Nhịp tương tác VLE của At-Risk khác Not-At-Risk ra sao theo thời gian?
+3. Độ trễ nộp bài liên hệ thế nào với điểm assessment và lịch sử học lại?
+4. Người học sử dụng những loại tài nguyên VLE nào nhiều nhất?
+5. Tổ hợp `highest_education × imd_band` nào có tỷ lệ At-Risk cao?
+6. Logistic Regression nhận diện At-Risk tốt đến đâu và ai cần được ưu tiên hỗ trợ?
 
-## 3. Data contract
+## 3. Quy ước dữ liệu
 
-Nguồn là Open University Learning Analytics Dataset — OULAD, gồm bảy bảng liên kết:
+- Hạt chính: `(code_module, code_presentation, id_student)` — một learning attempt.
+- `At_Risk = 1`: `Fail` hoặc `Withdrawn`; `At_Risk = 0`: `Pass` hoặc `Distinction`.
+- Pass Rate: `Pass` hoặc `Distinction` chia tổng learning attempts.
+- Điểm trung bình: tổng điểm hợp lệ chia số assessment có điểm, không lấy trung bình chồng trung bình.
+- VLE click là proxy tương tác nền tảng, không phải attendance hay study hours.
+- Model dùng snapshot chỉ chứa thông tin có ngày `<= 105`; dashboard không train lại model.
+- Risk Level phục vụ can thiệp: Low `<40%`, Medium `40–<70%`, High `≥70%`.
+- Threshold phân loại chính thức của model vẫn là `0,415`; risk level không viết lại nhãn dự báo.
 
-1. `studentInfo`
-2. `studentRegistration`
-3. `studentAssessment`
-4. `assessments`
-5. `studentVle`
-6. `vle`
-7. `courses`
+## 4. Storytelling cuối — hai trang vật lý
 
-Hạt phân tích:
+Rubric gốc mô tả bốn phần nội dung. Bản triển khai mới **không bỏ nội dung**, mà gom chúng vào hai trang rõ hơn:
 
-```text
-(code_module, code_presentation, id_student)
-```
+1. **Academic Insight & Behavior:** mô tả kết quả + yếu tố/hành vi + không gian.
+2. **Risk Matrix & Early Warning:** tương tác đa biến + mô hình + danh sách hành động.
 
-Một dòng là một **learning attempt**, không nhất thiết là một sinh viên duy nhất.
+Mạch kể chuyện: **Ai và ở đâu đang gặp rủi ro → hành vi nào đi cùng kết quả → tổ hợp bối cảnh nào đáng chú ý → model cảnh báo ai để hỗ trợ sớm.**
 
-Quy tắc bắt buộc:
+## 5. Trang 1 — Academic Insight & Behavior
 
-- Giữ nguyên raw; không sửa CSV thủ công.
-- Aggregate assessment/VLE về đúng hạt trước khi join.
-- Không tạo dữ liệu giả về sleep, stress, motivation, attendance hoặc study hours.
-- VLE clicks là tương tác trên nền tảng, không phải giờ học hoặc điểm danh.
-- `imd_band` là mức thiếu thốn của khu vực, không phải thu nhập cá nhân.
-- Mọi tỷ lệ ghi tử số, mẫu số, filter context và `N`.
+### Bộ lọc và KPI
 
-## 4. Câu hỏi nghiên cứu
+- Slicers: `code_module`, `code_presentation`, `gender`.
+- KPI: Total Students, Avg Score, Pass Rate, At-Risk Rate.
+- Click một vùng trên map tạo cross-filter cho KPI và bốn chart còn lại; có nút bỏ lọc vùng.
 
-### Câu hỏi phân tích dữ liệu
+### Năm biểu đồ
 
-- **RQ1 — Phân bố kết quả:** `Pass/Distinction/Fail/Withdrawn` và `At_Risk` khác nhau thế nào theo module/presentation?
-- **RQ2 — Tương tác VLE:** mức độ, tần suất và xu hướng VLE liên hệ thế nào với kết quả?
-- **RQ3 — Assessment:** tiến độ, completion và điểm assessment liên hệ thế nào với kết quả?
-- **RQ4 — Đặc điểm và không gian:** prior attempts, credits, education, age, disability, IMD và region có khác biệt gì về `At_Risk`?
-- **RQ5 — Tương tác đa yếu tố:** tổ hợp VLE, assessment và đặc điểm học tập nào tạo thành risk profile rõ nhất?
+| # | Biểu đồ | Nội dung và tương tác |
+|---:|---|---|
+| 1 | Filled Geographic Map | 13 vùng OULAD, màu theo At-Risk rate, tooltip có rate/count/N, click vùng để cross-filter |
+| 2 | 100% Stacked Bar | Cơ cấu Distinction/Pass/Fail/Withdrawn; click module để drill xuống presentation |
+| 3 | Multi-Line | VLE clicks trung bình/lượt/ngày, trung bình trượt 7 ngày; At-Risk so với Not-At-Risk; vạch chấm là hạn nộp quan trọng |
+| 4 | Scatter + Trendline | `submission_delay` so với `score`; kích thước theo `num_of_prev_attempts`; màu theo At-Risk; trendline tính trên toàn bộ dữ liệu lọc |
+| 5 | Treemap | Tỷ trọng tổng click theo `activity_type` |
 
-### Câu hỏi model độc lập
+### Ba insight/story động
 
-- **RQ6 — Dự báo:** Logistic Regression nhận diện sớm `At_Risk` tốt đến đâu, threshold nào phù hợp và model thường sai ở đâu?
+1. Pass Rate và At-Risk Rate trong filter context.
+2. Chênh lệch VLE clicks trung bình giữa At-Risk và Not-At-Risk.
+3. Tương quan Pearson giữa độ trễ–điểm, kèm loại tài nguyên VLE dẫn đầu.
 
-RQ6 thuộc phần model, không thay thế insight phân tích của RQ1–RQ5.
+## 6. Trang 2 — Risk Matrix & Early Warning
 
-## 5. EDA và giả thuyết
+### Bộ lọc và KPI
 
-EDA phải có ít nhất 3–5 biểu đồ tĩnh Matplotlib/Seaborn và kiểm tra các giả thuyết:
+- Slicers: Risk Level và `imd_band`.
+- KPI: Model Accuracy, Recall At-Risk, High Risk Count.
+- KPI theo filter context được ghi rõ `N`; metric công bố toàn test vẫn hiện trong caption để đối chiếu.
 
-1. Kết quả khác nhau giữa module/presentation.
-2. VLE clicks thấp liên hệ với `At_Risk` cao hơn.
-3. Active days thấp liên hệ với `At_Risk` cao hơn.
-4. Tương tác VLE giảm hoặc gián đoạn gần cutoff liên hệ với rủi ro.
-5. Assessment completion thấp liên hệ với rủi ro.
-6. Điểm assessment trước cutoff thấp liên hệ với rủi ro.
-7. Prior attempts liên hệ với kết quả.
-8. Education, credits, IMD hoặc region có khác biệt.
-9. VLE thấp kết hợp assessment thấp tạo risk profile rõ hơn.
-10. Mối liên hệ thay đổi theo module/presentation.
+### Bốn biểu đồ và một bảng hành động
 
-Mỗi giả thuyết được ghi một trong ba trạng thái: **Ủng hộ / Không ủng hộ / Chưa đủ bằng chứng**.
+| # | Biểu đồ | Nội dung |
+|---:|---|---|
+| 6 | Heatmap Matrix | Hàng `highest_education`, cột `imd_band`, màu At-Risk rate, từng ô có `N` |
+| 7 | Box Plot | Điểm assessment có trọng số đến ngày 105 theo số lần học trước `0,1,2,3+` |
+| 8 | Gauge | Xác suất At-Risk trung bình với dải Low/Medium/High; vạch tím là threshold model 41,5% |
+| 9 | Donut Actual vs Predicted | TP, TN, FP, FN; nhấn mạnh FN là trường hợp At-Risk bị bỏ sót |
+| — | Student Action List | `student_id`, module, presentation, IMD, probability, model status và data bar đỏ; nút một-click lọc toàn Trang 2 về High Risk; tối đa 100 dòng |
 
-## 6. Insight phân tích
+### Ba insight/story động
 
-Chọn 5–7 insight, mục tiêu là sáu insight. Insight phải được rút ra từ dữ liệu và biểu đồ; metric model không được tính là insight.
+1. Tổ hợp education × IMD có At-Risk rate cao nhất trong các ô `N≥30`.
+2. So sánh điểm trung vị nhóm chưa học trước với nhóm `3+` lần.
+3. Xác suất trung bình, High Risk Count, Accuracy, Recall và số FN trong filter context.
 
-| ID | Chủ đề cần tìm | Bằng chứng trực quan dự kiến |
-|---|---|---|
-| INS-01 | Chênh lệch kết quả theo module/presentation | Donut, stacked bar, sunburst |
-| INS-02 | Mức độ và xu hướng tương tác VLE | Line, box plot |
-| INS-03 | Tiến độ/completion/điểm assessment | Box plot, stacked bar |
-| INS-04 | Tương tác VLE × assessment | Scatter/bubble, heatmap |
-| INS-05 | Risk profile từ lịch sử và đặc điểm học tập | Treemap, heatmap, stacked bar |
-| INS-06 | Phân bố không gian của rủi ro | Geographic Map và bar đối chiếu nếu cần |
+## 7. Đủ yêu cầu trực quan
 
-Đây là hướng tìm insight, chưa phải kết luận. Nội dung cuối chỉ được chốt sau EDA.
-
-Mỗi insight hợp lệ phải có:
-
-- RQ và giả thuyết liên quan.
-- Biểu đồ/bảng bằng chứng tái tạo được.
-- Số liệu, tử số, mẫu số và `N`.
-- Nhóm so sánh và filter context.
-- Diễn giải bằng ngôn ngữ liên hệ.
-- Missingness, yếu tố gây nhiễu và giới hạn.
-- Ý nghĩa thực tế hoặc bước phân tích tiếp theo.
-
-## 7. Inventory biểu đồ
-
-Phương án an toàn gồm **9 loại biểu đồ không phải map** và **1 Geographic Map bắt buộc riêng**.
-
-| STT | Loại biểu đồ | Nội dung | Liên kết phân tích |
-|---:|---|---|---|
-| 1 | Donut chart | Tỷ trọng bốn lớp kết quả | RQ1 / INS-01 |
-| 2 | Stacked bar chart | Kết quả theo module/presentation | RQ1 / INS-01 |
-| 3 | Sunburst chart | Drill-down Module → Presentation → Kết quả | RQ1 / INS-01 |
-| 4 | Line chart | VLE/active days theo thời gian | RQ2 / INS-02 |
-| 5 | Box plot | Phân bố VLE hoặc assessment theo kết quả | RQ2–RQ3 / INS-02–03 |
-| 6 | Scatter/Bubble chart | Assessment × VLE × kết quả | RQ5 / INS-04 |
-| 7 | Heatmap | Tương tác VLE × assessment/đặc điểm | RQ5 / INS-04–05 |
-| 8 | Treemap | Quy mô và tỷ lệ risk profile | RQ4–RQ5 / INS-05 |
-| 9 | Histogram | Phân bố xác suất dự báo | RQ6 / Model |
-| Map | Choropleth Geographic Map | Phân bố không gian của `At_Risk` | RQ4 / INS-06 |
+Có **8 loại biểu đồ không phải map**: 100% stacked bar, multi-line, scatter, treemap, heatmap, box plot, gauge và donut. Geographic Map là loại thứ chín và là cổng bắt buộc độc lập.
 
-Confusion matrix, ROC/PR curve và calibration plot vẫn phải làm cho model nhưng không tính thành loại mới nếu trùng cấu trúc heatmap, line hoặc scatter.
-
-Sau EDA có thể thay một chart không phù hợp, nhưng vẫn phải giữ ít nhất chín loại không phải map và Geographic Map độc lập.
-
-## 8. Geographic Map — cổng bắt buộc riêng
-
-Map không được dùng để bù vào số loại biểu đồ thông thường.
+Mỗi chart có title, axis/đơn vị, tooltip, chú thích grain/scope và `N` khi cần. Màu semantic thống nhất: xanh cho an toàn/Not-At-Risk; cam cho cảnh báo; đỏ cho At-Risk/High Risk.
 
-- Loại: Choropleth Map.
-- Đơn vị: 13 `region` của OULAD.
-- Measure chính: `At-Risk Rate`.
-- Tooltip: Region, learning attempts, At-Risk count, At-Risk rate.
-- Filter: Module và Presentation.
-- Geometry phải có nguồn và giấy phép.
-- Mapping phải khớp 13/13 region.
-- Cách xử lý `Ireland` phải được giải thích.
-- Không tự tạo centroid hoặc polygon.
-- Tổng `N` trên map phải khớp filter context.
-- Phân biệt vùng không có dữ liệu với tỷ lệ bằng 0.
-
-Nếu chưa có geometry hợp lệ, map phải ghi **chưa hoàn thành**, không được thay bằng bar chart.
-
-## 9. Bốn phần dashboard
-
-### Overview
-
-- KPI tổng quan.
-- Phân bố kết quả.
-- So sánh module/presentation.
-- Donut, stacked bar, sunburst.
-
-### Factor Analysis
-
-- VLE clicks, active days và xu hướng theo thời gian.
-- Assessment completion và score.
-- Tương tác VLE × assessment.
-- Line, box plot, scatter/bubble, heatmap.
-
-### Risk Analysis
-
-- Prior attempts, credits, education, IMD.
-- Risk profile.
-- Phân bố không gian.
-- Treemap, heatmap và Geographic Map.
-
-### Prediction
-
-- Xác suất `At_Risk`, risk band và threshold.
-- Actual vs Predicted.
-- False Positive/False Negative.
-- Metric, confidence interval và calibration.
-- Histogram, confusion matrix, ROC/PR và calibration plot.
-
-## 10. Tương tác bắt buộc
-
-- Filter nhiều cấp: Module → Presentation → Region.
-- Drill-down: Module → Presentation → Kết quả.
-- Tooltip hover có metric, mẫu số và `N`.
-- Cross-filtering giữa các biểu đồ.
-- Reset filter và hiển thị filter context.
-- Empty state khi không có dữ liệu.
-- Prediction mặc định dùng test split.
-- Không lấy metric của subgroup đã filter rồi gắn nhãn là metric toàn test.
-
-## 11. Model — phần độc lập với insight
-
-Chỉ dùng Logistic Regression vì target là phân loại nhị phân và thuật toán này phù hợp rubric.
-
-- Target: `At_Risk`.
-- Cutoff: ngày 105.
-- Chỉ dùng dữ liệu xuất hiện trước hoặc tại cutoff.
-- Split theo `id_student` để tránh cùng sinh viên xuất hiện ở nhiều tập.
-- Tune/CV trên train.
-- Chọn threshold trên validation.
-- Đánh giá cuối trên test.
-- Threshold hiện tại: khoảng `0,415`.
-
-Metric test hiện tại:
-
-| Metric | Giá trị |
-|---|---:|
-| Accuracy | 82,7% |
-| Precision At-Risk | 80,2% |
-| Recall At-Risk | 73,5% |
-| F1 At-Risk | 76,7% |
-| ROC-AUC | 0,891 |
-| PR-AUC | 0,870 |
-
-Các số trên là kết quả đánh giá model, **không phải insight phân tích**.
-
-Phần model phải giải thích feature, leakage guard, split, threshold, metric, confidence interval, calibration, sai số và giới hạn sử dụng.
-
-## 12. Storytelling
-
-### Story phân tích
-
-1. Kết quả học tập đang phân bố thế nào?
-2. Chênh lệch tập trung ở module/presentation nào?
-3. VLE cho thấy dấu hiệu gì?
-4. Assessment bổ sung bằng chứng gì?
-5. Khi VLE và assessment kết hợp, risk profile nào xuất hiện?
-6. Risk profile liên hệ thế nào với lịch sử và đặc điểm học tập?
-7. Rủi ro phân bố theo không gian ra sao?
-8. Tổng hợp 5–7 insight và giới hạn.
-
-### Chuyển sang model
-
-> Từ các dấu hiệu quan sát được, Logistic Regression có thể nhận diện sớm `At_Risk` đến mức nào?
-
-### Story model
-
-1. Model dự báo điều gì và tại thời điểm nào?
-2. Threshold được chọn thế nào?
-3. Model đúng bao nhiêu và bỏ sót bao nhiêu trường hợp At-Risk?
-4. Xác suất có đáng tin cậy không?
-5. Model nên và không nên được sử dụng thế nào?
-
-Thông điệp cuối:
-
-> Model là công cụ cảnh báo sớm để ưu tiên theo dõi, không phải công cụ tự động quyết định sinh viên nào sẽ thất bại.
-
-## 13. QA và bằng chứng
-
-### Data QA
-
-- Số dòng/cột, checksum, duplicate key.
-- Join cardinality, missing, outlier và grain.
-
-### Insight QA
-
-- Có 5–7 insight thực tế.
-- Mỗi insight có biểu đồ, số liệu, `N` và giới hạn.
-- Không dùng metric model thay cho insight.
-- Không suy diễn nhân quả.
-
-### Dashboard QA
-
-- Đủ 9 loại biểu đồ không phải map.
-- Geographic Map được nghiệm thu riêng.
-- Filter nhiều cấp, drill-down, tooltip, cross-filtering.
-- Reset, empty state và KPI khớp baseline Python.
-
-### Model QA
-
-- Verification PASS.
-- Đúng model version, cutoff, threshold và test split.
-- Metric khớp artifact; Actual vs Predicted đúng.
-- Không leakage.
-
-## 14. Thứ tự thực hiện
-
-1. Giữ ổn định data contract và model hiện tại.
-2. Hoàn thành EDA.
-3. Ghi kết quả H01–H10.
-4. Chọn 5–7 insight phân tích.
-5. Chốt story phân tích.
-6. Chốt inventory biểu đồ dựa trên insight.
-7. Hoàn thiện bốn phần Streamlit.
-8. Bổ sung Geographic Map có nguồn.
-9. Hoàn thiện interaction.
-10. Đối chiếu KPI và model output.
-11. Chạy app từ môi trường sạch.
-12. Ghi evidence.
-13. Viết báo cáo, slide, video và kịch bản demo.
-
-## 15. Nguyên tắc nghiệm thu
-
-- Không sửa rubric để khớp hiện vật.
-- Không đánh dấu hoàn thành chỉ vì file tồn tại hoặc app khởi động.
-- Insight, model và trực quan dự báo là ba nhóm bằng chứng riêng.
-- Geographic Map là cổng độc lập với tiêu chí đa dạng biểu đồ.
-- Chỉ commit/push khi chủ dự án duyệt rõ ràng.
+## 8. Data mart phục vụ dashboard
+
+`src/dashboard_features.py` tạo bốn bảng nhỏ từ dữ liệu interim đã clean:
+
+- `assessment_deadlines.csv`
+- `assessment_submissions.csv.gz`
+- `vle_daily_profile.csv.gz`
+- `vle_activity_summary.csv.gz`
+
+App không đọc `studentVle.csv` 8,4 triệu dòng trong request render. Hai bảng VLE phải bảo toàn tổng `39.605.099` clicks.
+
+## 9. Cổng nghiệm thu
+
+- Page 1 mặc định render 5 Plotly charts, 4 KPI, không exception.
+- Page 2 mặc định render 4 Plotly charts, 3 KPI, 1 action table, không exception.
+- Map render 13/13 region, click region tạo cross-filter và có reset.
+- Module bar drill xuống presentation; breadcrumb hiển thị đúng cấp.
+- Risk Level/IMD filter cập nhật chart, KPI và action list.
+- Model verification phải PASS; test metric công bố: Accuracy 82,7%, Recall 73,5%.
+- Automated test, visual QA, link check và `git diff --check` phải PASS.
+- Không sửa hai file rubric được bảo vệ.
+- Không commit/push trước khi leader duyệt.

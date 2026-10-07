@@ -1,71 +1,44 @@
 # 10 — Tổng kết triển khai và bàn giao toàn bộ dự án
 
-**Ngày tổng kết:** 07/10/2026  
-**Hướng triển khai đã duyệt:** Python cho toàn bộ pipeline, EDA, model và dashboard; Streamlit + Plotly cho ứng dụng tương tác.  
-**Người thực hiện chính:** Leader dự án.  
-**Repo phát hành mới:** `https://github.com/vhoanglong54/ttdltq_finalVER2.git`  
-**Nguồn yêu cầu được bảo vệ:** không chỉnh sửa `docs/02-rubric-traceability.md` và `docs/source/TTDLTQ_script.docx`.
+**Cập nhật:** 07/10/2026
 
-Tài liệu này ghi lại toàn bộ hiện vật đã triển khai, quyết định kỹ thuật, kết quả kiểm tra, cách tái tạo và phần còn phải hoàn thành trước khi nộp. Chi tiết chuyên sâu của model vẫn nằm tại [04-model.md](04-model.md); tài liệu này đóng vai trò bản tổng kết/bàn giao, không thay thế nguồn giải thích model đó.
+**Trạng thái Git:** đã được leader duyệt để commit/push
+
+**Repo đích:** `https://github.com/vhoanglong54/ttdltq_finalVER2.git`
+
+**Công nghệ cuối:** Python, Pandas, scikit-learn, Streamlit và Plotly
+**Nguồn được bảo vệ:** `02-rubric-traceability.md` và `source/TTDLTQ_script.docx` không bị chỉnh sửa.
+
+Tài liệu này là bản bàn giao tổng hợp. Giải thích chuyên sâu duy nhất của model nằm ở [04-model.md](04-model.md); thiết kế dashboard cuối nằm ở [plan_approved.md](plan_approved.md) và [05-dashboard-spec.md](05-dashboard-spec.md).
 
 ## 1. Kết quả tổng thể
 
-Luồng dự án hiện tại:
-
 ```text
-7 bảng OULAD chính thức
-  → xác minh nguồn và audit
-  → cleaning theo từng bảng
-  → aggregate assessment/VLE đúng hạt
-  → join thành bảng phân tích
-  → EDA + 10 giả thuyết
-  → 6 insight có số liệu và giới hạn
-  → Logistic Regression cảnh báo sớm tại ngày 105
-  → dashboard Streamlit 4 trang
-  → Geographic Map + tương tác + model diagnostics
-  → automated QA + visual QA
+7 bảng OULAD
+  → audit nguồn
+  → clean từng bảng
+  → aggregate đúng grain
+  → join bảng phân tích 32.593 attempts
+  → EDA + 10 giả thuyết + 6 insight dữ liệu
+  → Logistic Regression cảnh báo sớm ngày 105
+  → 4 data marts cho dashboard
+  → dashboard Streamlit hai trang
+  → 8 chart type + Geographic Map + action list
+  → automated QA + browser visual QA
 ```
 
-Các phần đã có hiện vật chạy được:
+Hiện vật local đã có:
 
-- Pipeline dữ liệu có audit, cleaning, aggregate, join và báo cáo chất lượng.
-- Bảng processed chuẩn 32.593 learning attempts, 35 cột và không trùng khóa attempt.
-- Notebook/script EDA, 6 hình tĩnh Matplotlib/Seaborn, 13 bảng bằng chứng.
-- 10/10 giả thuyết có trạng thái và bằng chứng; 6 insight tách biệt với model.
-- Logistic Regression v4 có leakage guard, group split, tuning, threshold, bootstrap CI và verification.
-- Dashboard Streamlit gồm 4 trang, 9 loại biểu đồ không phải map và 1 Geographic Map riêng.
-- Filter nhiều cấp, reset, filter context, tooltip, drill-down và cross-filtering.
-- QA tự động 15/15 test PASS và QA trực quan bằng trình duyệt thật.
+- Pipeline dữ liệu tái tạo được và báo cáo chất lượng.
+- `clean_dataset.csv`: 32.593 attempts, 35 cột, 0 duplicate attempt key.
+- EDA: 10 giả thuyết, 6 insight, 13 bảng bằng chứng và 6 hình tĩnh.
+- Logistic Regression v4: leakage guard, group split, tuning, threshold, bootstrap CI và verification.
+- Dashboard hai trang theo đặc tả mới, có map cross-filter, module drill-down và High-Risk Action List.
+- 17 unit tests, AppTest và kiểm tra bằng Microsoft Edge.
 
-## 2. Các quyết định đã chốt
+## 2. Dữ liệu
 
-### 2.1 Công nghệ
-
-| Phần | Công nghệ cuối cùng |
-|---|---|
-| Xử lý dữ liệu | Python, Pandas, NumPy |
-| EDA tĩnh | Matplotlib, Seaborn |
-| Model | scikit-learn Logistic Regression |
-| Dashboard | Streamlit + Plotly |
-| Geographic Map | Plotly Choropleth + GeoJSON có nguồn |
-| Kiểm thử | `unittest`, Streamlit AppTest, Playwright/Edge cho visual QA |
-
-Các hướng Power BI/Tableau cũ đã được dọn khỏi code và tài liệu đang sử dụng. Nội dung còn nhắc Tableau trong tài liệu rubric được bảo vệ vẫn giữ nguyên theo yêu cầu không sửa rubric.
-
-### 2.2 Phạm vi nghiệp vụ
-
-- Đơn vị phân tích là một **learning attempt** có khóa `(code_module, code_presentation, id_student)`.
-- `At_Risk = 1` khi `final_result` là `Fail` hoặc `Withdrawn`.
-- `At_Risk = 0` khi `final_result` là `Pass` hoặc `Distinction`.
-- OULAD là dữ liệu quan sát; kết luận chỉ dùng các từ **liên hệ**, **khác biệt**, **xu hướng**, không tuyên bố nhân quả.
-- VLE clicks là tương tác trên nền tảng, không phải attendance, study hours hoặc chất lượng học.
-- Metric model là bằng chứng dự báo riêng, không được dùng thay cho insight phân tích dữ liệu.
-
-## 3. Dữ liệu và pipeline
-
-### 3.1 Nguồn dữ liệu
-
-Pipeline sử dụng đủ bảy bảng OULAD có khóa nối tự nhiên:
+### 2.1 Bảy bảng nguồn
 
 1. `studentInfo`
 2. `studentRegistration`
@@ -75,113 +48,97 @@ Pipeline sử dụng đủ bảy bảng OULAD có khóa nối tự nhiên:
 6. `vle`
 7. `courses`
 
-Raw được giữ ngoài Git và không sửa bằng spreadsheet. File nguồn được xác minh header, số dòng/checksum trước khi pipeline xử lý.
+Raw được giữ bất biến. Pipeline đọc raw, ghi interim và build processed; không sửa CSV bằng spreadsheet.
 
-### 3.2 Cleaning và aggregate
+### 2.2 Hạt và target
 
-Các bước chính đã triển khai trong `src/oulad_pipeline.py`:
+- Learning attempt key: `(code_module, code_presentation, id_student)`.
+- `At_Risk=1`: `Fail` hoặc `Withdrawn`.
+- `At_Risk=0`: `Pass` hoặc `Distinction`.
+- VLE click là proxy tương tác nền tảng, không phải thời gian học/attendance.
+- `imd_band` là chỉ số khu vực, không phải thu nhập cá nhân.
 
-- Chuẩn hóa schema/kiểu dữ liệu và kiểm tra khóa.
-- Chuẩn hóa hiển thị `imd_band` nhưng không thay đổi ý nghĩa raw.
-- Tách rõ count bằng 0 với score/ngày bị thiếu.
-- Aggregate assessment về đúng hạt attempt trước khi join.
-- Consolidate `studentVle` theo learner–resource–day và cộng `sum_click`.
-- Không xóa cơ học 787.170 dòng `studentVle` trùng toàn dòng vì chúng có thể là đóng góp click hợp lệ.
-- Bảo toàn toàn bộ 39.605.099 clicks: 10.655.280 dòng raw thành 8.459.320 sự kiện logic.
-- Join từ `studentInfo`; kiểm soát cardinality để không nhân dòng.
+### 2.3 Cleaning và join
 
-### 3.3 Bảng phân tích cuối
+- Chuẩn hóa schema/type và kiểm tra khóa.
+- Giữ missing có ý nghĩa; không ép score thiếu về 0.
+- Aggregate assessment về attempt trước join.
+- Consolidate VLE theo learner–resource–day và cộng `sum_click`.
+- Bảo toàn 39.605.099 clicks: 10.655.280 dòng raw thành 8.459.320 sự kiện logic.
+- Join từ `studentInfo` và kiểm soát cardinality để không nhân dòng.
 
-`data/processed/clean_dataset.csv`:
+### 2.4 Bảng phân tích cuối
 
 | Thuộc tính | Giá trị |
 |---|---:|
-| Số learning attempts | 32.593 |
-| Số cột | 35 |
+| Attempts | 32.593 |
+| Columns | 35 |
+| Unique students | 28.785 |
 | Duplicate attempt key | 0 |
-| Người học duy nhất | 28.785 |
 | At-Risk count | 17.208 |
 | At-Risk rate | 52,7966% |
-| Tổng VLE clicks | 39.605.099 |
+| VLE clicks | 39.605.099 |
 | SHA-256 | `70db1ff19a1dc8553005b0e3801786d20ab1488cc3420a2fe15c5a2254d80f9a` |
 
-Định nghĩa cột, grain, missingness và công thức KPI nằm tại [09-data-dictionary.md](09-data-dictionary.md), [processed README](../data/processed/README.md) và [Data Quality Report](../reports/data-quality-report.md).
+Chi tiết cột/grain/missingness: [09-data-dictionary.md](09-data-dictionary.md).
 
-## 4. EDA, giả thuyết và insight
+## 3. EDA và insight dữ liệu
 
-### 4.1 Hiện vật EDA
+### 3.1 Hiện vật
 
-- Script tái tạo: `src/eda_analysis.py`.
-- Notebook trình bày: `notebooks/03_eda.ipynb`.
-- Bảng bằng chứng: `reports/eda/`.
-- Hình tĩnh: `reports/figures/eda/`.
+- Script: `src/eda_analysis.py`.
+- Notebook: `notebooks/03_eda.ipynb`.
+- Tables: `reports/eda/`.
+- Figures: `reports/figures/eda/`.
 
-Sáu hình EDA tĩnh đã tạo:
+### 3.2 Kết quả 10 giả thuyết
 
-1. Outcome theo module–presentation.
-2. Xu hướng VLE theo tuần.
-3. Box plot VLE sớm theo trạng thái.
-4. Assessment completion và risk.
-5. Heatmap VLE × assessment.
-6. At-Risk rate theo region.
-
-### 4.2 Kết quả 10 giả thuyết
-
-| ID | Kết quả chính |
+| ID | Kết quả mô tả |
 |---|---|
-| H01 | Chênh lệch At-Risk giữa module–presentation đạt 38,34 điểm %. |
-| H02 | VLE clicks Q1 so với Q4 chênh 45,74 điểm %. |
-| H03 | Active days Q1 so với Q4 chênh 50,36 điểm %. |
-| H04 | Mean weekly clicks của At-Risk thấp hơn ở 15/15 tuần đầy đủ. |
-| H05 | Completion 0% so với 100% chênh 71,85 điểm %. |
-| H06 | Assessment-score Q1 so với Q4 chênh 51,78 điểm %. |
-| H07 | Có 1+ previous attempts so với 0 chênh 19,73 điểm %. |
-| H08 | Regional range đạt 14,71 điểm %, phải nêu confounding. |
-| H09 | Low-VLE + low-assessment so với high-high chênh 65,07 điểm %. |
-| H10 | Độ lớn low-vs-high engagement khác theo module: 27,68–63,49 điểm %. |
+| H01 | Module–presentation chênh At-Risk 38,34 điểm %. |
+| H02 | VLE clicks Q1–Q4 chênh 45,74 điểm %. |
+| H03 | Active days Q1–Q4 chênh 50,36 điểm %. |
+| H04 | At-Risk có mean weekly clicks thấp hơn ở 15/15 tuần đủ dữ liệu. |
+| H05 | Assessment completion 0%–100% chênh 71,85 điểm %. |
+| H06 | Assessment score Q1–Q4 chênh 51,78 điểm %. |
+| H07 | Có previous attempts–không có chênh 19,73 điểm %. |
+| H08 | Regional range 14,71 điểm %, cần nêu confounding. |
+| H09 | Low-low so với high-high chênh 65,07 điểm %. |
+| H10 | Chênh engagement theo module dao động 27,68–63,49 điểm %. |
 
-Tất cả kết quả trên là mô tả liên hệ, không phải bằng chứng nhân quả.
+### 3.3 Sáu insight cố định
 
-### 4.3 Sáu insight cuối
+1. Rủi ro khác mạnh giữa module–presentation.
+2. VLE thấp đi cùng At-Risk cao hơn.
+3. Tiến độ assessment là tín hiệu phân tách mạnh.
+4. Kết hợp VLE và assessment cho risk profile rõ hơn.
+5. Lịch sử học lại là context cần chú ý.
+6. At-Risk có khác biệt theo region.
 
-| Insight | Bằng chứng chính |
-|---|---|
-| INS-01 | `CCC-2014B`: 65,75%, N=1.936; `AAA-2013J`: 27,42%, N=383; chênh 38,34 điểm %. |
-| INS-02 | VLE Q1: 64,41%, N=6.283; Q4: 18,67%, N=6.283; chênh 45,74 điểm %. |
-| INS-03 | Completion 0%: 96,60%, N=1.677; 100%: 24,75%, N=18.969; chênh 71,85 điểm %. |
-| INS-04 | Low-low: 73,33%, N=1.680; high-high: 8,26%, N=2.385; chênh 65,07 điểm %. |
-| INS-05 | 1+ previous attempts: 56,05%, N=3.140; 0 previous: 36,32%, N=21.992; chênh 19,73 điểm %. |
-| INS-06 | North Western: 59,81%, N=2.906; Ireland: 45,10%, N=1.184; chênh 14,71 điểm %. |
+Số liệu, `N`, nguồn tái tạo và giới hạn nằm tại [insight-log.md](insight-log.md). Model là phần riêng, không dùng thay insight dữ liệu.
 
-Nguồn diễn giải đầy đủ, scope và limitation của từng insight nằm tại [insight-log.md](insight-log.md).
+## 4. Model cảnh báo sớm
 
-## 5. Model cảnh báo sớm
+### 4.1 Mục tiêu
 
-### 5.1 Bài toán và cutoff
+Tại ngày 105, model ước lượng xác suất một learning attempt kết thúc bằng `Fail/Withdrawn`. Đây là phân loại nhị phân, không dự báo điểm.
 
-- Thuật toán chính: Logistic Regression theo yêu cầu rubric.
-- DummyClassifier chỉ là baseline kỹ thuật.
-- Model dự báo xác suất một attempt sẽ kết thúc `Fail/Withdrawn`.
-- Cutoff cuối: ngày 105.
-- Cohort eligible: 25.132 attempts, At-Risk rate 38,78%.
-- Chỉ event/submission có ngày không vượt cutoff được phép làm feature.
-- Attempt đăng ký sau cutoff hoặc đã rút trước/tại cutoff bị loại.
+### 4.2 Phương pháp
 
-### 5.2 Chống leakage và split
+- Thuật toán chính: Logistic Regression đúng yêu cầu rubric.
+- DummyClassifier chỉ làm baseline.
+- Eligible cohort: 25.132 attempts; At-Risk 38,78%.
+- Split theo `id_student`: train 17.952, validation 3.590, test 3.590.
+- Feature chỉ dùng event/submission `date <= 105`.
+- Cấm target, identifier, withdrawal date, aggregate all-time và thông tin sau cutoff.
+- Preprocessing fit trên train; grid search dùng StratifiedGroupKFold.
+- Threshold chọn trên validation với recall floor; test chỉ dùng đánh giá cuối.
 
-- Cấm dùng `id_student`, `final_result`, `At_Risk`, `Performance_Level`, `date_unregistration`, aggregate `*_all_time` hoặc dữ liệu sau cutoff làm feature.
-- Split theo nhóm `id_student`; một người học không xuất hiện ở nhiều tập.
-- Train: 17.952 attempts; validation: 3.590; test: 3.590.
-- Preprocessing chỉ fit trên train.
-- Grid search 5-fold StratifiedGroupKFold chọn theo PR-AUC.
-- Threshold chỉ chọn trên validation, không chọn bằng test.
-- Threshold cuối: `0,415`, với ràng buộc Recall At-Risk validation tối thiểu 0,75.
+### 4.3 Model công bố
 
-### 5.3 Kết quả test v4
+Model version: `lr-oulad-c105-s42-v4`; threshold: `0,415`.
 
-Model version: `lr-oulad-c105-s42-v4`.
-
-| Metric | Kết quả test |
+| Metric test | Giá trị |
 |---|---:|
 | Accuracy | 82,70% |
 | Balanced Accuracy | 81,01% |
@@ -192,180 +149,120 @@ Model version: `lr-oulad-c105-s42-v4`.
 | PR-AUC | 0,8701 |
 | Brier Score | 0,1237 |
 
-Confusion matrix: TN=1.946, FP=252, FN=369, TP=1.023. Accuracy cao hơn dummy baseline 21,48 điểm %. Khoảng tin cậy bootstrap 95% của Accuracy là 81,46%–83,84%, cận dưới vẫn vượt 80%.
+Confusion matrix toàn test: TN=1.946, FP=252, FN=369, TP=1.023. Accuracy CI 95%: 81,46%–83,84%. Verification 9/9 gate PASS.
 
-`model_verification.csv` có 9/9 cổng PASS: checksum artifact, Accuracy, CI, Recall, F1, PR-AUC, Brier, margin so với dummy và minimum presentation accuracy.
+### 4.4 Output dùng trong app
 
-### 5.4 Output model dùng cho dashboard
+Dashboard đọc CSV/JSON/TXT trong `data/processed/model/`; không đọc joblib và không train lại. Mặc định luôn dùng test split. Published test metric được giữ riêng với subgroup metric phát sinh từ filter.
 
-Bundle công bố trong `data/processed/model/` gồm snapshot ngày 105, predictions, metrics, confusion matrix, ROC/PR points, calibration, confidence interval, subgroup QA, coefficients, threshold selection, CV results, metadata và verification.
+Risk Level cho ưu tiên can thiệp:
 
-Ứng dụng không train lại model khi render và không đọc file pickle/joblib. App chỉ đọc artifact đã kiểm tra, mặc định hiển thị test split và luôn công bố model version, cutoff, threshold và `N`.
+- Low `<40%`
+- Medium `40–<70%`
+- High `≥70%`
 
-## 6. Dashboard Streamlit
+Dải này không thay thế classification threshold 41,5%.
 
-### 6.1 Kiến trúc
+## 5. Data marts mới cho dashboard
 
-- Entry point: `dashboard/app.py`.
-- Data contract/loader/KPI: `dashboard/dashboard_data.py`.
-- UI/state/filter: Streamlit.
-- Biểu đồ/selection event: Plotly.
-- App không join raw event và không huấn luyện model trong request render.
+`src/dashboard_features.py` tạo:
 
-### 6.2 Bốn trang storytelling
+| File | Grain | Mục đích |
+|---|---|---|
+| `assessment_deadlines.csv` | assessment | deadline markers |
+| `assessment_submissions.csv.gz` | valid submission | delay–score scatter |
+| `vle_daily_profile.csv.gz` | filter dims × At-Risk × day | VLE multi-line |
+| `vle_activity_summary.csv.gz` | filter dims × activity type | treemap |
 
-#### Overview — RQ1
+Lý do: app không được đọc/join `studentVle.csv` 259 MB trong mỗi request. Hai VLE marts đều bảo toàn tổng 39.605.099 clicks. Submission mart có 170.874 bài hợp lệ và `submission_delay = date_submitted - due_date`.
 
-- KPI toàn khóa.
-- Donut phân bố Distinction/Pass/Fail/Withdrawn.
-- 100% stacked bar theo module–presentation.
-- Sunburst drill Module → Presentation → Result.
-- INS-01 và câu chuyển sang tín hiệu VLE/assessment.
+## 6. Dashboard cuối — hai trang
 
-#### Factor Analysis — RQ2, RQ3, RQ5
+Rubric được giữ nguyên. Bốn phần logic trước đây được gom thành hai trang vật lý để story ngắn và dễ demo hơn.
 
-- KPI snapshot ngày 105.
-- Line chart bốn cửa sổ VLE không chồng lấp: ngày 50–77, 78–91, 92–98 và 99–105.
-- Box plot assessment score trước cutoff.
-- Bubble chart assessment × VLE × At-Risk rate.
-- Heatmap quartile VLE × quartile assessment.
-- INS-02, INS-03 và INS-04.
+### 6.1 Trang 1 — Academic Insight & Behavior
 
-#### Risk Analysis — RQ4, RQ5
+**Slicers:** module, presentation, gender.
+**KPI:** Total Students, Avg Score, Pass Rate, At-Risk Rate.
 
-- Treemap previous attempts → dimension được chọn.
-- Cho phép đổi dimension: education, IMD, credits, age hoặc disability.
-- Bar chart rate theo region, luôn đi kèm `N`.
-- Geographic Choropleth Map.
-- INS-05 và INS-06.
+1. Filled Geographic Map theo At-Risk rate; click region cross-filter KPI và chart 2–5.
+2. 100% Stacked Bar cơ cấu result; click module drill xuống presentation.
+3. Multi-Line VLE At-Risk vs Not-At-Risk, rolling mean 7 ngày và deadline markers.
+4. Scatter delay–score, bubble size previous attempts, trendline và Pearson r.
+5. Treemap tổng clicks theo activity type.
 
-#### Prediction — RQ6
+Card story cuối trang có ba insight động: result context, chênh VLE, delay–score và tài nguyên dẫn đầu.
 
-- Accuracy, Precision, Recall, F1, ROC-AUC và PR-AUC.
-- Histogram risk probability và đường threshold.
-- Confusion matrix Actual × Predicted.
-- ROC và Precision–Recall curve.
-- Calibration plot và bootstrap confidence intervals.
-- Giải thích ý nghĩa metric và giới hạn sử dụng model.
+### 6.2 Trang 2 — Risk Matrix & Early Warning
 
-### 6.3 Inventory biểu đồ
+**Slicers:** Risk Level, IMD.
+**KPI:** Accuracy context, Recall context, High Risk Count.
 
-Dashboard có 9 loại không phải map:
+6. Heatmap `highest_education × imd_band`, màu At-Risk rate, mỗi ô có `N`.
+7. Box Plot score ngày 105 theo previous attempts `0/1/2/3+`.
+8. Gauge mean risk probability với ba dải và threshold marker.
+9. Donut TP/TN/FP/FN.
+10. Student Action List: top 100 High Risk, probability, data bar đỏ và nút một-click lọc toàn Trang 2 về High.
 
-1. Donut
-2. Stacked bar
-3. Sunburst
-4. Line
-5. Box plot
-6. Scatter/Bubble
-7. Heatmap
-8. Treemap
-9. Histogram
+Card story cuối trang có ba insight động: top education–IMD cell với `N≥30`, score median theo previous attempts, và hiệu quả/cảnh báo model.
 
-Ngoài ra có 1 Geographic Choropleth Map độc lập. Confusion matrix, ROC/PR và calibration là bằng chứng model bổ sung, không được dùng để cộng khống số loại.
+### 6.3 Inventory và UI
 
-### 6.4 Tương tác và UI/UX
-
-- Filter cascade: Module → Presentation → Region.
-- Reset filter và caption filter context.
-- Tooltip có metric, context và `N`.
-- Chọn segment stacked bar để cross-filter sunburst.
-- Sunburst drill-down theo ba tầng.
-- Empty state khi filter không có dữ liệu.
-- Điều hướng bốn trang qua sidebar và query parameter.
-- Màu semantic nhất quán; At-Risk dùng đỏ/cam, Not-At-Risk dùng xanh.
-- Title, axis title, đơn vị, caption và limitation được ghi trực tiếp.
-- Rate/color scale dùng miền 0–100% để không phóng đại khác biệt.
-- Bố cục card sáng, khoảng cách, chiều cao biểu đồ và tương phản được chuẩn hóa cho màn hình demo 1440 × 1000.
+- 8 loại chart không phải map: stacked bar, multi-line, scatter, treemap, heatmap, box, gauge, donut.
+- 1 Geographic Map riêng.
+- Màu semantic: xanh an toàn, cam cảnh báo, đỏ At-Risk/High.
+- Title, axis, unit, caption, hover và `N` được ghi trực tiếp.
+- Scatter lấy mẫu 4.500 điểm để render nhưng thống kê dùng toàn subset.
+- Insight chỉ ba câu/trang; không còn Sunburst hoặc hierarchy dày đặc.
 
 ## 7. Geographic Map
 
-- Geometry gốc: ONS, *Counties and Unitary Authorities (December 2025) Boundaries UK BGC*.
-- Giấy phép: Open Government Licence v3.0.
-- Script dựng: `src/build_oulad_regions_geojson.py`.
-- Output: `dashboard/assets/oulad_regions.geojson`.
-- Bảng audit: `dashboard/assets/oulad_regions_mapping.csv`.
-- Coverage: 13/13 nhãn OULAD, 218 đơn vị ONS được ánh xạ một lần, geometry hợp lệ.
-- Tooltip: Region, At-Risk rate, learning attempts và At-Risk count.
+- Asset: `dashboard/assets/oulad_regions.geojson`.
+- Audit: `dashboard/assets/oulad_regions_mapping.csv`.
+- Nguồn ONS Counties and Unitary Authorities, OGL v3.0.
+- Coverage 13/13 OULAD region; 218 ONS areas ánh xạ duy nhất.
+- `Ireland` dùng Northern Ireland làm proxy có công bố.
+- Map dùng cho phân bố vùng, không suy luận cá nhân/nhân quả.
 
-`Ireland` dùng Northern Ireland làm proxy có công bố rõ. Geometry là xấp xỉ có kiểm soát theo vùng OU lịch sử, không dùng để suy luận ranh giới hành chính chi tiết hoặc cá nhân.
+## 8. Tương tác đã triển khai
 
-## 8. QA đã thực hiện
+- Slicer module → presentation cascade và gender.
+- Map click → region state → rerun → cập nhật KPI/chart; nút reset xóa state/selection.
+- Module click → presentation drill; breadcrumb và nút quay lại.
+- Risk Level/IMD filter cập nhật KPI, 4 chart và action list.
+- Tooltip có metric, context và `N`.
+- Empty state có thông báo, không tạo số giả.
 
-### 8.1 Automated QA
+## 9. QA
 
-- `python -m py_compile`: PASS cho app, data layer, EDA, map builder và model.
-- `python -m unittest discover -s tests -v`: **15/15 PASS**.
-- Streamlit AppTest: Overview 3 chart, Factor 4, Risk 3, Prediction 4; 0 exception.
-- Risk dimension selector: IMD, credits, age và disability đều render 3 chart, 0 exception.
-- Baseline KPI không filter khớp bảng processed.
-- Prediction artifact khớp model version/cutoff/threshold và verification PASS.
-- GeoJSON khớp 13/13 region và geometry hợp lệ.
-- Markdown relative link check: 0 liên kết thiếu.
-- `git diff --check`: không có whitespace error.
+### 9.1 Automated
 
-### 8.2 Visual QA
+- Compile app, data layer, mart builder, EDA, map builder và model: PASS.
+- `python -m unittest discover -s tests -v`: **17/17 PASS**.
+- AppTest Page 1: 5 chart, 4 metric, 0 exception.
+- AppTest Page 2: 4 chart, 3 metric, 1 table, 0 exception.
+- AppTest High only: 4 chart, 0 exception, High count 810.
+- Markdown links: 0 missing.
+- `git diff --check`: PASS.
 
-Kiểm tra bằng Microsoft Edge tại viewport 1440 × 1000:
+### 9.2 Browser
 
-- Tooltip stacked bar xuất hiện và có module–presentation, tỷ trọng, `N`.
-- Chọn `AAA-2013J` trả `N=383`; sunburst chỉ còn nhánh tương ứng.
-- Click `BBB` drill đúng subtree BBB.
-- Heatmap có số đọc trực tiếp và scale 0–100%.
-- Map render geometry thật, có legend và tooltip.
-- ROC/PR có trục, đường chuẩn và legend không chồng tiêu đề.
+- Microsoft Edge, viewport 1440×1000.
+- Map render 13 paths; click tạo active cross-filter.
+- Stacked bar click tạo drill module → presentation.
+- Timeline, scatter, treemap, heatmap, box, gauge, donut và action list đều render.
+- Bằng chứng: [visual QA](../dashboard/evidence/visual-qa-2026-10-07.md).
 
-Bằng chứng: [automated QA](../dashboard/evidence/automated-qa-2026-10-06.md) và [visual QA](../dashboard/evidence/visual-qa-2026-10-07.md).
+### 9.3 Bảo vệ rubric
 
-### 8.3 Bảo vệ rubric
+`git diff` không có thay đổi ở:
 
-Tại vòng QA cuối:
+- `docs/02-rubric-traceability.md`
+- `docs/source/TTDLTQ_script.docx`
 
-- Hash working tree của `docs/02-rubric-traceability.md` trùng `HEAD`.
-- Hash working tree của `docs/source/TTDLTQ_script.docx` trùng `HEAD`.
-- Không còn tham chiếu Power BI/Tableau trong tài liệu/code đang sử dụng ngoài hai nguồn được bảo vệ.
+## 10. Cách tái tạo
 
-## 9. Cấu trúc hiện vật chính
-
-```text
-dashboard/
-  app.py
-  dashboard_data.py
-  chart-inventory.md
-  qa-t09.md
-  assets/
-  evidence/
-data/
-  processed/clean_dataset.csv
-  processed/model/
-docs/
-  plan_approved.md
-  04-model.md
-  05-dashboard-spec.md
-  09-data-dictionary.md
-  10-implementation-summary.md
-  insight-log.md
-notebooks/
-  03_eda.ipynb
-reports/
-  data-quality-report.md
-  eda/
-  figures/eda/
-src/
-  oulad_pipeline.py
-  eda_analysis.py
-  at_risk_features.py
-  at_risk_experiments.py
-  at_risk_model.py
-  build_oulad_regions_geojson.py
-tests/
-  test_at_risk_model.py
-  test_dashboard_contract.py
-```
-
-## 10. Cách tái tạo và chạy
-
-### 10.1 Cài môi trường
+### Cài môi trường
 
 ```powershell
 python -m venv .venv
@@ -373,7 +270,7 @@ python -m venv .venv
 python -m pip install -r requirements.txt
 ```
 
-### 10.2 Tái tạo pipeline từ raw
+### Pipeline dữ liệu
 
 ```powershell
 python src/verify_oulad_source.py data/raw
@@ -383,71 +280,63 @@ python src/oulad_pipeline.py build data/raw
 python src/oulad_pipeline.py report
 ```
 
-### 10.3 Tái tạo EDA
+### EDA, model và dashboard marts
 
 ```powershell
 python src/eda_analysis.py
-```
-
-### 10.4 Tái tạo model
-
-```powershell
 python src/at_risk_model.py audit-cutoffs
 python src/at_risk_experiments.py --n-jobs -1
 python src/at_risk_model.py train --cutoff 105 --n-jobs -1
 python src/at_risk_model.py validate
+python src/dashboard_features.py
 ```
 
-### 10.5 Chạy dashboard
+### Chạy app và tests
 
 ```powershell
 streamlit run dashboard/app.py
-```
-
-### 10.6 Chạy kiểm thử
-
-```powershell
 python -m unittest discover -s tests -v
 ```
 
-## 11. Chính sách file trong Git
+## 11. Cấu trúc hiện vật chính
 
-Được đưa vào repo mới:
+```text
+dashboard/
+  app.py
+  dashboard_data.py
+  chart-inventory.md
+  wireframe.md
+  qa-t09.md
+  assets/
+  evidence/
+data/processed/
+  clean_dataset.csv
+  dashboard/
+  model/
+docs/
+  plan_approved.md
+  04-model.md
+  05-dashboard-spec.md
+  09-data-dictionary.md
+  10-implementation-summary.md
+  insight-log.md
+src/
+  oulad_pipeline.py
+  eda_analysis.py
+  at_risk_model.py
+  dashboard_features.py
+tests/
+  test_at_risk_model.py
+  test_dashboard_contract.py
+```
 
-- Toàn bộ source, test, notebook, tài liệu, report và ảnh QA.
-- `clean_dataset.csv` để tái tạo EDA/KPI ngay.
-- Bundle artifact model CSV/JSON/TXT cuối để dashboard chạy ngay sau khi clone.
-- GeoJSON và mapping audit có nguồn/giấy phép.
+## 12. Phần chưa hoàn thành tự động
 
-Không đưa vào Git:
+- Leader review UI và nội dung cuối trên máy demo.
+- Báo cáo tối thiểu 40 trang, tài liệu tham khảo IEEE.
+- Slide, kịch bản demo và video backup.
+- Link deploy cuối.
+- Luyện giải thích grain, cleaning, insight, cutoff, threshold, metric, FN/FP và giới hạn model.
+- Commit/push chỉ được thực hiện sau khi leader duyệt.
 
-- `data/raw/` và `data/interim/`: dữ liệu nguồn/trung gian dung lượng lớn, tái tạo theo hướng dẫn.
-- `models/**`: file nhị phân joblib không được dashboard sử dụng và có thể tái tạo.
-- `feature_snapshot_weighted_experiment.csv`: snapshot thí nghiệm trung gian, không phải artifact cuối.
-- `.venv/`, cache Python/Jupyter và Streamlit secrets.
-
-## 12. Phần còn lại trước khi nộp cuối
-
-Những mục dưới đây chưa được tuyên bố hoàn thành chỉ vì code/dashboard đã có:
-
-- Chạy dashboard thủ công lần cuối trên đúng máy dùng để demo.
-- Chốt báo cáo khoa học tối thiểu 40 trang và tài liệu tham khảo IEEE.
-- Chèn ảnh dashboard/model/insight cùng caption vào báo cáo.
-- Làm slide thuyết trình và kịch bản demo theo story bốn trang.
-- Quay video backup và kiểm tra link truy cập.
-- Luyện giải thích data grain, cleaning, insight, cutoff, threshold, metric và giới hạn model.
-
-## 13. Checklist bàn giao
-
-- [x] Pipeline dữ liệu và processed contract.
-- [x] EDA, 10 giả thuyết và 6 insight.
-- [x] Logistic Regression v4 và verification.
-- [x] Dashboard bốn trang.
-- [x] 9 loại biểu đồ và Geographic Map.
-- [x] Filter, tooltip, drill-down và cross-filter.
-- [x] Automated QA và visual QA.
-- [x] Tài liệu chạy/tái tạo và bản tổng kết này.
-- [ ] Leader chạy review thủ công trên máy demo.
-- [ ] Hoàn thành báo cáo, slide, video và link demo cuối.
-
-Thông điệp sử dụng cuối cùng: model hỗ trợ ưu tiên theo dõi sớm, không tự động quyết định người học nào sẽ thất bại.
+Thông điệp sử dụng cuối: model dùng để **ưu tiên hỗ trợ sớm**, không tự động quyết định hay xử phạt người học.

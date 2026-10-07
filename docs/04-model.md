@@ -205,7 +205,7 @@ Các artifact tái tạo được nằm trong `data/processed/model/`; bundle Py
 | `model_verification.csv` | Chín điều kiện đối chiếu Accuracy, CI, Recall/F1, PR-AUC, Brier, baseline, presentation và checksum. |
 | `model_evaluation.txt` | Báo cáo chạy tự sinh cục bộ; không phải tài liệu dự án thứ hai. |
 
-Data source chính của trang Prediction là `model_predictions.csv`, hạt một attempt eligible. Nếu liên kết với bảng phân tích phải dùng đủ ba khóa `(code_module, code_presentation, id_student)` và không join event raw. Trang đánh giá mặc định `dataset_split = test`.
+Data source chính của phần Early Warning trên Trang 2 là `model_predictions.csv`, hạt một attempt eligible. Nếu liên kết với bảng phân tích phải dùng đủ ba khóa `(code_module, code_presentation, id_student)` và không join event raw. Trang đánh giá mặc định `dataset_split = test`.
 
 - KPI lấy từ `model_metrics.csv`: Accuracy, Precision, Recall, F1, ROC-AUC, PR-AUC.
 - Xác suất/danh sách rủi ro lấy từ `model_predictions.csv`.

@@ -1,39 +1,51 @@
-# Wireframe và story flow dashboard Python
+# Wireframe dashboard hai trang
 
-## Khung chung
+## Trang 1 — Academic Insight & Behavior
 
 ```text
-┌──────────────── Sidebar ────────────────┐
-│ Navigation                             │
-│ Module → Presentation → Region         │
-│ Filter context + Reset                 │
-└────────────────────────────────────────┘
-
-┌──────────────── Main content ─────────────────────────────┐
-│ Page title + câu hỏi nghiên cứu + giới hạn                │
-│ KPI strip                                                  │
-│ Primary visual / selection → secondary visual (crossfilter)│
-│ Insight card: số liệu + N + interpretation + limitation    │
-│ Câu chuyển sang phần tiếp theo                              │
-└────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│ Module slicer │ Presentation slicer │ Gender slicer                 │
+├───────────────┬─────────────────────┬───────────────┬───────────────┤
+│ Total Students│ Avg Score           │ Pass Rate     │ At-Risk Rate  │
+├─────────────────────────────────────────────────────────────────────┤
+│ 1. FILLED MAP — click region để cross-filter                       │
+├─────────────────────────────────────────────────────────────────────┤
+│ 2. 100% STACKED BAR — Module → click → Presentation                 │
+├─────────────────────────────────────────────────────────────────────┤
+│ 3. MULTI-LINE — VLE At-Risk vs Not-At-Risk + deadline markers       │
+├─────────────────────────────────────────────────────────────────────┤
+│ 4. SCATTER + TRENDLINE — submission delay × score                   │
+├─────────────────────────────────────────────────────────────────────┤
+│ 5. TREEMAP — activity_type × clicks                                 │
+├─────────────────────────────────────────────────────────────────────┤
+│ STORY CARD — 3 insight ngắn, định lượng, cập nhật theo filter        │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
-## Bốn phần
+## Trang 2 — Risk Matrix & Early Warning
 
-| Phần | Câu hỏi | Vai trò trong story | Trạng thái |
-|---|---|---|---|
-| Overview | Điều gì đang xảy ra với kết quả và `At_Risk`? | Thiết lập baseline, outcome mix và drill module/presentation | Đã triển khai local |
-| Factor Analysis | VLE và assessment đến ngày 105 liên hệ ra sao? | Line, box, bubble và heatmap cho tín hiệu/tương tác | Đã triển khai local |
-| Risk Analysis | Nhóm/risk profile nào đáng chú ý? | Treemap, regional bar và Geographic Map | Đã triển khai local; map có audit |
-| Prediction | Nhận diện sớm tốt đến đâu và sai ở đâu? | Xác suất, confusion, ROC/PR, calibration và CI | Đã triển khai local |
+```text
+┌─────────────────────────────────────────────────────────────────────┐
+│ Risk Level slicer                 │ IMD band slicer                  │
+├──────────────────────┬──────────────────────┬───────────────────────┤
+│ Model Accuracy       │ Recall At-Risk       │ High Risk Count       │
+├─────────────────────────────────────────────────────────────────────┤
+│ 6. HEATMAP — highest_education × imd_band                           │
+├─────────────────────────────────────────────────────────────────────┤
+│ 7. BOX PLOT — score ngày 105 × previous attempts                    │
+├───────────────────────────────┬─────────────────────────────────────┤
+│ 8. GAUGE — mean probability   │ 9. DONUT — TP/TN/FP/FN             │
+├─────────────────────────────────────────────────────────────────────┤
+│ STUDENT ACTION LIST — High Risk + red bar + nút lọc High một-click  │
+├─────────────────────────────────────────────────────────────────────┤
+│ STORY CARD — 3 insight ngắn + giới hạn sử dụng model                │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
-## Tương tác
+## Quy tắc UX
 
-- **Filter nhiều cấp:** module làm hẹp presentation; module/presentation làm hẹp region.
-- **Drill-down:** sunburst Module → Presentation → Result; hierarchy và phần trăm parent hiển thị trong tooltip.
-- **Tooltip:** metric, mẫu số/`N`, định nghĩa và context.
-- **Cross-filtering:** selection trên biểu đồ chính làm đổi KPI/bảng/biểu đồ liên quan.
-
-## Nguyên tắc chọn visual
-
-Mỗi visual gắn RQ/H, kiểu dữ liệu và insight. Inventory đã khóa sau EDA tại `chart-inventory.md`: 9 loại chart không phải map; Geographic Map là visual bắt buộc và được nghiệm thu riêng.
+- Slicer và KPI luôn đứng trước visual.
+- Insight đặt cuối mỗi story page, không che chart và không lặp mô tả trục.
+- Caption giải thích grain, sample, threshold và limitation ngay nơi cần.
+- Không hiển thị hierarchy nhiều cấp đồng thời; drill chỉ mở một cấp.
+- Action list là hỗ trợ ưu tiên, không phải quyết định tự động.

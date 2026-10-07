@@ -157,6 +157,17 @@ Checklist này thay thế các câu hỏi xác minh cũ: kết quả đã đư�
 
 Hiện vật [Data Quality Report](../reports/data-quality-report.md) ghi dữ liệu thực, script và lệnh chạy. T07 aggregate `studentAssessment` thành 25.843 và `studentVle` thành 29.228 attempt có event rồi left join vào 32.593 lượt học của `studentInfo`; output 0 duplicate attempt key, 0 unmatched assessment/VLE dimension/registration/courses. Bước chuẩn hóa hiển thị đổi `imd_band` về định dạng phần trăm tường minh, thêm `imd_band_display`, fill 0 có chọn lọc cho count/tổng event và bỏ `has_registration_record` zero variance. Đây là bảng mô tả sạch tái tạo, không phải snapshot feature dự báo sớm. Model v4 dựng snapshot cutoff ngày 105 riêng; mọi dashboard phải dùng đúng contract trong `docs/04-model.md`.
 
+## Data marts cho dashboard hai trang
+
+| File | Grain | Cột chính | Guardrail |
+|---|---|---|---|
+| `dashboard/assessment_deadlines.csv` | assessment | module, presentation, type, due date, weight | chỉ đánh dấu deadline, không phải kết quả người học |
+| `dashboard/assessment_submissions.csv.gz` | submission có score/due date | student, delay, score, previous attempts, filter dims | `delay = submitted - due`; scatter chỉ sample để render |
+| `dashboard/vle_daily_profile.csv.gz` | module × presentation × gender × region × At-Risk × day | `sum_click` | tổng click toàn bảng phải bằng 39.605.099 |
+| `dashboard/vle_activity_summary.csv.gz` | filter dims × activity type | `sum_click` | tổng click toàn bảng phải bằng 39.605.099 |
+
+Các mart được tái tạo bằng `python src/dashboard_features.py`; không sửa thủ công. Đây là aggregate mô tả cho dashboard, không phải feature input mới của model.
+
 ## Đánh giá nghiệm thu T02
 
 | Điều kiện T02 | Trạng thái | Bằng chứng / giới hạn |

@@ -19,7 +19,7 @@ Toàn bộ project do **một người thực hiện chính**. Tài liệu này 
 | 4 | EDA và interaction analysis | Sáu chart tĩnh, kết quả H01–H10 | Bước 2–3 | Đã có hiện vật local |
 | 5 | Insight và storytelling | Sáu insight đạt mẫu, mạch chuyện hoàn chỉnh | Bước 4 | Đã có hiện vật local |
 | 6 | Logistic Regression | Feature cutoff-safe, metric/CI, prediction CSV, verification | Bước 2 | Đã có hiện vật kỹ thuật |
-| 7 | Dashboard Python | App bốn phần, 9 loại chart thường, map riêng, interaction | Bước 2, 5, 6 | Đã triển khai local; chờ QA UI thủ công |
+| 7 | Dashboard Python | App hai trang, 8 loại chart thường, map riêng, interaction và action list | Bước 2, 5, 6 | Đã triển khai local; chờ leader duyệt |
 | 8 | Geographic Map | Geometry ONS, mapping 13/13, tooltip/filter/QA | Bước 2, 7 | Đã có hiện vật local và audit tự động |
 | 9 | QA tích hợp | KPI baseline, filter/drill/cross-filter, model/version, map coverage | Bước 5–8 | Tự động PASS; chờ ảnh/video interaction |
 | 10 | Báo cáo và demo | Báo cáo ≥40 trang, IEEE, slide, video, kịch bản | Bước 9 | Chưa hoàn tất |

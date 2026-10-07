@@ -38,7 +38,7 @@ Calculated fields dự kiến, phải chốt ngưỡng bằng EDA và ghi lại 
 - `Engagement_Level`: nhóm mức hoạt động VLE (thay cho `Attendance_Level` gợi ý trong DOCX); có thể dựa trên clicks/ngày hoạt động trong cùng giai đoạn.
 - `Study_Intensity_Proxy`: cường độ click VLE trong cửa sổ thời gian xác định; là **proxy** tương tác, không phải study hours.
 - `Assessment_Trend`: thay đổi điểm giữa các bài đánh giá đã nộp theo thời gian nếu đủ quan sát; thay cho `Grade_Change = Current_Score - Previous_Score`, vốn không có biến điểm cuối/điểm trước tương ứng.
-- `Risk_Probability`, `Predicted_Status`, `Risk_Band`: đầu ra model; ngưỡng Low/Medium/High phải ghi rõ và kiểm định trước khi dùng trong dashboard.
+- `Risk_Probability`, `Predicted_Status`: đầu ra model. Dashboard tạo dải can thiệp Low `<40%`, Medium `40–<70%`, High `≥70%`; dải này không thay classification threshold 41,5%.
 
 `Sleep_Category` và biến lối sống khác không thể tạo từ OULAD. Không suy diễn hay bổ sung dữ liệu giả. Hướng tương tác khả thi: `VLE engagement × prior attempts`, `early assessment × VLE engagement`, `imd_band × activity_type/engagement`, `region × engagement` (kiểm tra cỡ mẫu).
 

@@ -7,6 +7,9 @@ data/processed/**
 !data/processed/.gitkeep
 !data/processed/README.md
 !data/processed/clean_dataset.csv
+# Data marts nhỏ để dashboard chạy ngay sau khi clone.
+!data/processed/dashboard/
+!data/processed/dashboard/**
 # Công bố bundle CSV/JSON/TXT cuối để clone repo có thể chạy dashboard ngay.
 # Snapshot thử nghiệm trung gian vẫn tái tạo được và không cần cho demo.
 !data/processed/model/

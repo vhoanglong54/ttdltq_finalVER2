@@ -1,0 +1,8 @@
+* text=auto
+*.md text eol=lf
+*.docx binary
+*.py text eol=lf
+*.geojson text eol=lf
+*.twb text eol=lf
+*.twbx binary
+*.hyper binary

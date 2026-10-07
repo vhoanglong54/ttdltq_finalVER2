@@ -1,0 +1,36 @@
+# Dữ liệu tải về, các bảng trung gian và kết quả sinh tự động
+data/raw/**
+data/interim/**
+data/processed/**
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+!data/processed/README.md
+!data/processed/clean_dataset.csv
+# Công bố bundle CSV/JSON/TXT cuối để clone repo có thể chạy dashboard ngay.
+# Snapshot thử nghiệm trung gian vẫn tái tạo được và không cần cho demo.
+!data/processed/model/
+!data/processed/model/**
+data/processed/model/feature_snapshot_weighted_experiment.csv
+reports/figures/generated/**
+!reports/figures/generated/.gitkeep
+
+# Python / Jupyter
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Model artifacts sinh tự động
+models/**
+
+# Streamlit — secrets chỉ được giữ local
+.streamlit/secrets.toml
+
+# Hệ điều hành / biên tập
+.DS_Store
+Thumbs.db
+~$*.docx

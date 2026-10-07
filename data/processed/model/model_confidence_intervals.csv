@@ -1,0 +1,9 @@
+metric,point_estimate,lower_95,upper_95,bootstrap_unit,bootstrap_iterations,dataset_split,model_name,model_version
+accuracy,0.8270194986072423,0.8145879303235802,0.8384049682906574,id_student,2000,test,logistic_regression,lr-oulad-c105-s42-v4
+balanced_accuracy,0.810132055787393,0.7970710676801486,0.8229219488882084,id_student,2000,test,logistic_regression,lr-oulad-c105-s42-v4
+precision_at_risk,0.8023529411764706,0.7805436489888307,0.8229168725296442,id_student,2000,test,logistic_regression,lr-oulad-c105-s42-v4
+recall_at_risk,0.7349137931034483,0.7113545777426993,0.7576621525302922,id_student,2000,test,logistic_regression,lr-oulad-c105-s42-v4
+f1_at_risk,0.7671541057367829,0.7494268234844279,0.7844331599236058,id_student,2000,test,logistic_regression,lr-oulad-c105-s42-v4
+roc_auc,0.8905709082446948,0.8790093484553343,0.9012167663129176,id_student,2000,test,logistic_regression,lr-oulad-c105-s42-v4
+pr_auc,0.8700806352234532,0.8559867648757723,0.8836711920937746,id_student,2000,test,logistic_regression,lr-oulad-c105-s42-v4
+brier_score,0.12368204667888139,0.11726073779706327,0.13051300674236366,id_student,2000,test,logistic_regression,lr-oulad-c105-s42-v4
